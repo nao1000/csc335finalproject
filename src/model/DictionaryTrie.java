@@ -71,16 +71,16 @@ public class DictionaryTrie {
 		curr = root;
 	}
 	
-//	public boolean isWord(String s) {
-//		s = s.toLowerCase();
-//		for (int i = 0; i < s.length(); i++) {
-//			if (!curr.childExist(s.charAt(i))) {
-//				return false;
-//			}
-//			curr = curr.getChild(s.charAt(i));
-//		}
-//		curr.setTerminal();
-//		curr = root;
-//	}
-//	
+	public boolean isWord(String s) {
+		curr = root;
+		s = s.toLowerCase();
+		for (int i = 0; i < s.length(); i++) {
+			if (!curr.childExist(s.charAt(i))) {
+				return false;
+			}
+			curr = curr.getChild(s.charAt(i));
+		}
+		return curr.isWord();
+	}
+	
 }
