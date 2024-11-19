@@ -251,6 +251,14 @@ public class ScrabbleModel {
 		}
 		return dictionary.isWord(str.toString());
 	}
+	
+	public int calculateScore() {
+		int total = 0;
+		for (Move m : currMoves) {
+			total += board[m.getY()][m.getX()].getMulti() * board[m.getY()][m.getX()].getOccupyingLetter().getPoints();
+		}
+		return total;
+	}
 
 	@Override
 	public String toString() {

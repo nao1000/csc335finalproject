@@ -41,6 +41,10 @@ public class Letter {
 		
 	}
 	
+	public int getPoints() {
+		return points;
+	}
+	
 	public static Letter getLetter(int i) {
 		return LETTER_PILE[i];
 	}
