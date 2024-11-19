@@ -1,4 +1,6 @@
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +27,34 @@ public class TileTest {
 	
 	@Test
 	public void insertLetter() {
+		assertTrue(firstTile.placeLetterTile(Letter.getLetter(0)));
+	}
+	
+	@Test
+	public void insertOnFilledLetter() {
+		assertTrue(firstTile.placeLetterTile(Letter.getLetter(0)));
+		assertFalse(firstTile.placeLetterTile(Letter.getLetter(35)));
+	}
+	
+	@Test 
+	public void removeEmpty() {
+		assertFalse(firstTile.removeLetterTile());
+	}
+	
+	@Test
+	public void removeLetterPresent() {
+		firstTile.placeLetterTile(Letter.getLetter(0));
+		assertTrue(firstTile.removeLetterTile());
+	}
+	
+	@Test
+	public void getTile() {
+		firstTile.placeLetterTile(Letter.getLetter(0));
+		assertEquals(Letter.getLetter(0), firstTile.getOccupyingLetter());
+	}
+	
+	@Test
+	public void toStringFull() {
 		firstTile.placeLetterTile(Letter.getLetter(0));
 		assertEquals("E ", firstTile.toString());
 	}
