@@ -22,4 +22,8 @@ public class Move {
 	public Letter getLetter() {
 		return l;
 	}
+	
+	public String toString() {
+		return "(" + x + ", " + y + ") " + l.toString();
+	}
 }
