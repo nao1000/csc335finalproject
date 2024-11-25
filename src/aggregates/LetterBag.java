@@ -26,4 +26,8 @@ public class LetterBag {
 	public void addTo(Letter l) {
 		letterBag.add(l);
 	}
+	
+	public int size() {
+		return letterBag.size();
+	}
 }
