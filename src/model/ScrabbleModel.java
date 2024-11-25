@@ -198,26 +198,34 @@ public class ScrabbleModel {
 		Move moveEnd = currMoves.get(currMoves.size() - 1);
 		int x = moveStart.getX();
 		int y = moveStart.getY();
+		int localScore = 0;
 
-		// If the move is a horizontal word
+		// If the move is a single letter
 		if ((moveStart.getY() == moveEnd.getY()) && (moveStart.getX() == moveEnd.getX())) {
 			System.out.println("This is a special case");
 			//return true;
-			return checkHorizontal(x,y,2) && checkVertical(x,y,2);
+			return (checkHorizontal(x,y,2) != null) && (checkVertical(x,y,2) != null);
 		}
 		else if (moveStart.getY() == moveEnd.getY()) {
 			// Check if valid word across entire horizontal row
-			if (this.checkHorizontal(x, y, 1)) {
+			ArrayList<Move> horizontal = this.checkHorizontal(x, y, 1);
+			if (horizontal != null) {
 				// Then check if all vertical words are valid
+				localScore += calculateScoreB(horizontal);
 				while (x <= moveEnd.getX()) {
-					if (!checkVertical(x, y, 2)) {
+					ArrayList<Move> vertical = this.checkVertical(x, y, 2);
+					if (vertical == null) {
 						System.out.println("Invalid vertical case in horizontal word");
 						this.undoMoves();
 						return false;
 					}
+					if (vertical.size() > 1) {
+						localScore += calculateScoreB(vertical);
+					}
 					x++;
 				}
-				currPlayer.addScore(calculateScore());
+				//currPlayer.addScore(calculateScore());
+				currPlayer.addScore(localScore);
 				playerDiscard();
 				changeTurns();
 				this.currMoves.clear();
@@ -230,20 +238,30 @@ public class ScrabbleModel {
 
 		} else {
 			// If vertical case then check vertical full length
-			if (this.checkVertical(x, y, 1)) {
+			ArrayList<Move> vertical = this.checkVertical(x, y, 1);
+			
+			if (vertical != null) {
 				// Then check all new horizontal cases
+				localScore += calculateScoreB(vertical);
+
 				while (y <= moveEnd.getY()) {
-					if (!checkHorizontal(x, y, 2)) {
+					ArrayList<Move> horizontal = this.checkHorizontal(x, y, 2);
+					if (horizontal == null) {
 						// If not valid horizontally then undo moves
 						System.out.println("Invalid horitontal word in vertical case");
 						
 						this.undoMoves();
 						return false;
 					}
+					if (horizontal.size() > 1) {
+						localScore += calculateScoreB(horizontal);
+					}
+
 					y++;
 				}
 				// Else valid word
-				currPlayer.addScore(calculateScore());
+//				currPlayer.addScore(calculateScore());
+				currPlayer.addScore(localScore);
 				playerDiscard();
 				changeTurns();
 				this.currMoves.clear();
@@ -259,21 +277,56 @@ public class ScrabbleModel {
 		}
 	}
 	
+	public int calculateScoreB(ArrayList<Move> arr) {
+		// Also calculate score when
+		// 		Your placed tile forms a new word with existing tiles
+		// 		Your tiles extend an existing word
+		//		Your tiles fill a gap to make a new word
+		// Need to make sure the new word is valid
+		// Remember that every tile placed must contribute to the creation of a new valid word
+//		System.out.println("--------- Inside calculateScoreB -----------");
+//		for (Move m: arr) {
+//			System.out.print(m.getLetter().getChar());
+//		}
+		int score = 0;
+		for (Move m: arr) {
+			int x = m.getX();
+			int y = m.getY();
+			Tile tile = board[y][x];
+			Letter l = tile.getOccupyingLetter();
+			if (!l.equals(m.getLetter())) {
+				System.out.println("ERROR: The letters inside calculateScoreB are not aliging");
+			}
+			score += l.getPoints() * tile.getMulti();
+
+		}
+//		System.out.println("Score for this word is: " + score);
+		return score;
+	}
+	
+	
+	
 	public boolean adjacentCheck() {
 		for (Move m : currMoves) {
+			System.out.println("adjacentCheck move is (" + m.getX() + ", " + m.getY() + ")");
 			if (m.getY()-1 != -1 && !board[m.getY()-1][m.getX()].isUnoccupied()) {
+				// If not top board edge position above IS occupied, return true
 				return true;
 			}
 			else if (m.getX()-1 != -1 && !board[m.getY()][m.getX()-1].isUnoccupied()) {
+				// If not left board edge and position to left IS occupied, return true
 				return true;
 			}
 			else if (m.getX()+1 != 15 && !board[m.getY()][m.getX()+1].isUnoccupied()) {
+				// If not right board edge and position to right IS occupied, return true
 				return true;
 			}
 			else if (m.getY()+1 != 15 && !board[m.getY()+1][m.getX()].isUnoccupied()) {
+				// If not bottom board edge and position above IS occupied, return trie
 				return true;
 			}
 			else if (m.getX() == 7 && m.getY() == 7) {
+				// If position is middle of board, return true
 				return true;
 			}
 		}
@@ -292,7 +345,8 @@ public class ScrabbleModel {
 	 * @param minimumLength
 	 * @return
 	 */
-	private boolean checkHorizontal(int x, int y, int minimumLength) {
+	private ArrayList<Move> checkHorizontal(int x, int y, int minimumLength) {
+		ArrayList<Move> currentWord = new ArrayList<Move>(15);
 		ArrayList<Tile> checkLongerWord = new ArrayList<Tile>(15);
 		while (x >= 0 && !(this.board[y][x].isUnoccupied())) {
 			x--;
@@ -300,13 +354,18 @@ public class ScrabbleModel {
 		x++;
 		while (x <= 14 && !(this.board[y][x].isUnoccupied())) {
 			checkLongerWord.add(this.board[y][x]);
+			currentWord.add(new Move(this.board[y][x].getOccupyingLetter(), x, y));
 			x++;
 		}
-		System.out.println("Checking word horizontally" + checkLongerWord.toString());
-		if (checkLongerWord.size() < minimumLength) {
-			return true;
+		if (currentWord.size() < minimumLength) {
+			return currentWord;
 		}
-		return this.checkIfTileArrayIsWord(checkLongerWord);
+		if (this.checkIfTileArrayIsWord(currentWord)) {
+			return currentWord;
+		} else {
+			return null;
+		}
+		//return this.checkIfTileArrayIsWord(checkLongerWord);
 	}
 
 	/**
@@ -321,27 +380,32 @@ public class ScrabbleModel {
 	 * @param minimumLength
 	 * @return
 	 */
-	private boolean checkVertical(int x, int y, int minimumLength) {
+	private ArrayList<Move> checkVertical(int x, int y, int minimumLength) {
 		ArrayList<Tile> checkLongerWord = new ArrayList<Tile>(15);
+		ArrayList<Move> currentWord = new ArrayList<Move>(15);
 		while (y >= 0 && !(this.board[y][x].isUnoccupied())) {
 			y--;
 		}
 		y++;
 		while (y <= 14 && !(this.board[y][x].isUnoccupied())) {
 			checkLongerWord.add(this.board[y][x]);
+			currentWord.add(new Move(this.board[y][x].getOccupyingLetter(), x, y));
 			y++;
 		}
-		if (checkLongerWord.size() < minimumLength) {
-			return true;
+		if (currentWord.size() < minimumLength) {
+			return currentWord;
+		}		
+		if (this.checkIfTileArrayIsWord(currentWord)) {
+			return currentWord;
+		} else {
+			return null;
 		}
-		System.out.println("Checking word vertically" + checkLongerWord.toString());
-		return this.checkIfTileArrayIsWord(checkLongerWord);
 	}
 
-	private boolean checkIfTileArrayIsWord(ArrayList<Tile> tiles) {
+	private boolean checkIfTileArrayIsWord(ArrayList<Move> moves) {
 		StringBuffer str = new StringBuffer();
-		for (Tile t : tiles) {
-			str.append(t.getOccupyingLetter().toString().strip());
+		for (Move m : moves ) {
+			str.append(m.getLetter().toString().strip());
 		}
 		return dictionary.isWord(str.toString());
 	}
@@ -351,6 +415,12 @@ public class ScrabbleModel {
 		for (Move m : currMoves) {
 			total += board[m.getY()][m.getX()].getMulti() * board[m.getY()][m.getX()].getOccupyingLetter().getPoints();
 		}
+		// Also calculate score when
+		// 		Your placed tile forms a new word with existing tiles
+		// 		Your tiles extend an existing word
+		//		Your tiles fill a gap to make a new word
+		// Need to make sure the new word is valid
+		// Remember that every tile placed must contribute to the creation of a new valid word
 		return total;
 	}
 	

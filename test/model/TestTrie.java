@@ -9,6 +9,8 @@ import java.util.Scanner;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import model.DictionaryTrie;
+
 public class TestTrie {
 
 	static DictionaryTrie trie;
@@ -37,6 +39,8 @@ public class TestTrie {
 		assertEquals(trie.isWord("ZYMES"), true);
 		assertEquals(trie.isWord("CATS"), true);
 		assertEquals(trie.isWord("q"), false);
+		assertEquals(trie.isWord("TEST"), true);
+
 	}
 	
 	void test_getChar() {
