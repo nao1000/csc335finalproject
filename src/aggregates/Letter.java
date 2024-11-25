@@ -20,7 +20,7 @@ public class Letter {
 			while (myReader.hasNextLine()) {
 				String data[] = myReader.nextLine().split(" ");
 				for (int k = Integer.valueOf(data[1]); k > 0; k--) {
-					LETTER_PILE[i] = new Letter(data[0].charAt(0), Integer.valueOf(data[2]));
+					LETTER_PILE[i] = new Letter(data[0].charAt(0), Integer.valueOf(data[2]), i);
 					i++;
 				}
 			}
@@ -33,12 +33,18 @@ public class Letter {
 	
 	private char letter;
 	private int points;
+	private int index;
 	private boolean inUse = false;
 	
-	private Letter(char c, int points) {
+	private Letter(char c, int points, int index) {
 		this.letter = c;
 		this.points = points;
+		this.index = index;
 		
+	}
+	
+	public String getChar() {
+		return String.valueOf(letter);
 	}
 	
 	public int getPoints() {
@@ -51,6 +57,10 @@ public class Letter {
 	
 	public void setInUse() {
 		inUse = !inUse;
+	}
+	
+	public boolean isInUse() {
+		return inUse;
 	}
 	
 	@Override

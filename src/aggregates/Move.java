@@ -9,6 +9,7 @@ public class Move {
 		this.x = x;
 		this.y = y;
 		this.l = l;
+		this.l.setInUse();
 	}
 	
 	public int getX() {
@@ -21,6 +22,10 @@ public class Move {
 	
 	public Letter getLetter() {
 		return l;
+	}
+	
+	public void undoUse() {
+		l.setInUse();
 	}
 	
 	public String toString() {

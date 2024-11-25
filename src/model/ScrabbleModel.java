@@ -3,22 +3,44 @@ package model;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 import aggregates.Letter;
+import aggregates.LetterBag;
 import aggregates.Move;
+import aggregates.Player;
 import aggregates.Tile;
 
 public class ScrabbleModel {
 
 	private Tile[][] board = new Tile[15][15];
+	private LetterBag letterBag = new LetterBag();
 	private DictionaryTrie dictionary = new DictionaryTrie();
 	private ArrayList<Move> currMoves = new ArrayList<Move>();
-
+	private Player player1, player2;
+	private Player currPlayer;
+	private Random rand = new Random();
+	
 	public ScrabbleModel() {
 		initializeBoard();
 		initializeDictionary();
+		letterBag.fillBag();
+		player1 = new Player("Player One", Player.PlayerNum.ONE);
+		player2 = new Player("Player Two", Player.PlayerNum.TWO);
+		initializeHands();
+		currPlayer = player1;
+	}
 
+	public ScrabbleModel(String name1, String name2) {
+		initializeBoard();
+		initializeDictionary();
+		letterBag.fillBag();
+		player1 = new Player(name1, Player.PlayerNum.ONE);
+		player2 = new Player(name2, Player.PlayerNum.TWO);
+		initializeHands();
+		currPlayer = player1;
 	}
 
 	private void initializeBoard() {
@@ -67,11 +89,49 @@ public class ScrabbleModel {
 			System.out.println("Error: File not found");
 		}
 	}
+	
+	public void initializeHands() {
+		for (int i = 0; i < 7; i++) {
+			player1.addLetter(letterBag.draw(rand.nextInt(letterBag.size())));
+			player2.addLetter(letterBag.draw(rand.nextInt(letterBag.size())));
+		}
+	}
+	
+	public void discardLetters(ArrayList<Letter> discardLetters) {
+		currPlayer.discardLetter(discardLetters);
+		for (int i = 0; i < discardLetters.size(); i++) {
+			currPlayer.addLetter(letterBag.draw(rand.nextInt(letterBag.size())));
+		}
+		for (Letter l : discardLetters) {
+			letterBag.addTo(l);
+		}
+	}
+	
+	public void playerDiscard() {
+		ArrayList<Letter> arr = new ArrayList<Letter>();
+		for (Move m : currMoves) {
+			arr.add(m.getLetter());
+		}
+		currPlayer.discardLetter(arr);
+		for (int i = 0; i < arr.size(); i++) {
+			currPlayer.addLetter(letterBag.draw(rand.nextInt(letterBag.size())));
+		}
+	}
 
 	public boolean testDictionary(String test) {
 		return dictionary.isWord(test);
 	}
+	
+	public void makeMove(Letter l, int x, int y) {
+		currMoves.add(new Move(l, x, y));
+	}
 
+	
+	public void doMoves() {
+		for (Move m : currMoves) {
+			placeLetter(m.getLetter(), m.getX(), m.getY());
+		}
+	}
 	/**
 	 * Places a Letter L in position i, k if the space is unoccupied. Marks the
 	 * placement as a current move to be checked at the end of the turn
@@ -84,8 +144,8 @@ public class ScrabbleModel {
 	public boolean placeLetter(Letter l, int x, int y) {
 		if (board[y][x].isUnoccupied()) {
 			board[y][x].placeLetterTile(l);
-			System.out.println("In placeLetter we have x y is " + +x + ", " + y);
-			currMoves.add(new Move(l, x, y));
+//			System.out.println("In placeLetter we have x y is " + +x + ", " + y);
+//			currMoves.add(new Move(l, x, y));
 			return true;
 		}
 		return false;
@@ -96,6 +156,7 @@ public class ScrabbleModel {
 	 */
 	public void undoMoves() {
 		for (Move m : currMoves) {
+			m.undoUse();
 			board[m.getY()][m.getX()].removeLetterTile();
 		}
 		currMoves.clear();
@@ -127,6 +188,12 @@ public class ScrabbleModel {
 //		}
 
 		// Get the start end end of the current move and the x,y of the first letter
+		
+		if (!adjacentCheck()) {
+			this.undoMoves();
+			return false;
+		}
+		doMoves();
 		Move moveStart = currMoves.get(0);
 		Move moveEnd = currMoves.get(currMoves.size() - 1);
 		int x = moveStart.getX();
@@ -150,6 +217,9 @@ public class ScrabbleModel {
 					}
 					x++;
 				}
+				currPlayer.addScore(calculateScore());
+				playerDiscard();
+				changeTurns();
 				this.currMoves.clear();
 				return true;
 			} else {
@@ -166,13 +236,16 @@ public class ScrabbleModel {
 					if (!checkHorizontal(x, y, 2)) {
 						// If not valid horizontally then undo moves
 						System.out.println("Invalid horitontal word in vertical case");
-
+						
 						this.undoMoves();
 						return false;
 					}
 					y++;
 				}
 				// Else valid word
+				currPlayer.addScore(calculateScore());
+				playerDiscard();
+				changeTurns();
 				this.currMoves.clear();
 				return true;
 
@@ -184,6 +257,27 @@ public class ScrabbleModel {
 				return false;
 			}
 		}
+	}
+	
+	public boolean adjacentCheck() {
+		for (Move m : currMoves) {
+			if (m.getY()-1 != -1 && !board[m.getY()-1][m.getX()].isUnoccupied()) {
+				return true;
+			}
+			else if (m.getX()-1 != -1 && !board[m.getY()][m.getX()-1].isUnoccupied()) {
+				return true;
+			}
+			else if (m.getX()+1 != 15 && !board[m.getY()][m.getX()+1].isUnoccupied()) {
+				return true;
+			}
+			else if (m.getY()+1 != 15 && !board[m.getY()+1][m.getX()].isUnoccupied()) {
+				return true;
+			}
+			else if (m.getX() == 7 && m.getY() == 7) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -259,6 +353,16 @@ public class ScrabbleModel {
 		}
 		return total;
 	}
+	
+	
+	private void changeTurns() {
+		if (currPlayer == player1) {
+			currPlayer = player2;
+		}
+		else {
+			currPlayer = player1;
+		}
+	}
 
 	@Override
 	public String toString() {
@@ -271,5 +375,15 @@ public class ScrabbleModel {
 		}
 		return s.toString();
 	}
+	
+	
+	public List<Letter> getCurrHand() {
+		return currPlayer.getHand();
+	}
+	
+	public int currPlayerScore() {
+		return currPlayer.getScore();
+	}
+	
 
 }
