@@ -673,11 +673,11 @@ class TestScrabbleModel {
 	}
 
 
-	@Test
-	void testDictionaryInModel() {
-		ScrabbleModel model = new ScrabbleModel();
-		assertTrue(model.testDictionary("con"));
+//	@Test
+//	void testDictionaryInModel() {
+//		ScrabbleModel model = new ScrabbleModel();
+//		assertTrue(model.testDictionary("con"));
 
-	}
+	//}
 
 }

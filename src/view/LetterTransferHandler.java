@@ -7,19 +7,24 @@ import controller.ScrabbleController;
 import java.awt.Color;
 import java.awt.datatransfer.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class LetterTransferHandler extends TransferHandler {
     private DataFlavor letterFlavor = new DataFlavor(Letter.class, "Letter");
     private ScrabbleController controller;
-    private LetterLabel sourceComponent; // Store the original component being dragged
+    private static ArrayList<TileLabel> placedList = new ArrayList<TileLabel>();
 
     public LetterTransferHandler(ScrabbleController controller) {
+        this.controller = controller;
+    }
+    
+    public LetterTransferHandler(ScrabbleController controller, LetterLabel ll) {
         this.controller = controller;
     }
 
     @Override
     protected Transferable createTransferable(JComponent c) {
-        sourceComponent = (LetterLabel) c; // Store the source component
+        
         LetterLabel label = (LetterLabel) c;
         Letter letter = label.getLetter();
 
@@ -57,6 +62,7 @@ public class LetterTransferHandler extends TransferHandler {
        
             // Call method on ScrabbleController
             controller.makeMove(label.getLetter(), label.myGetX(), label.myGetY());
+            placedList.add(label);
             return true;
         } catch (UnsupportedFlavorException | IOException e) {
             e.printStackTrace();
@@ -88,5 +94,21 @@ public class LetterTransferHandler extends TransferHandler {
             }
             return letter;
         }
+    }
+    
+    public static void clearTileLabels() {
+    	for (TileLabel tl : placedList) {
+    		tl.getLetter().setInUse(false);
+    		tl.emptyTile();
+    	}
+    	placedList.clear();
+    }
+    
+    public static void printMe() {
+    	System.out.println(placedList.toString());
+    }
+    
+    public static void clearPlacedList() {
+    	placedList.clear();
     }
 }
