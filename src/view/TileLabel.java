@@ -10,12 +10,10 @@ import controller.ScrabbleController;
 public class TileLabel extends JLabel {
     private Optional<Letter> l;
     private int x, y;
-    private String multi;
 
-    public TileLabel(int x, int y, String multi, ScrabbleController controller) {
+    public TileLabel(int x, int y, ScrabbleController controller) {
         this.x = x;
         this.y = y;
-        this.multi = multi;
         this.setText(" ");
         initializeHandler(controller);
         this.l = Optional.empty();
@@ -36,6 +34,13 @@ public class TileLabel extends JLabel {
         this.setForeground(Color.BLACK);
         this.setOpaque(true); 
         this.setBackground(Color.LIGHT_GRAY);
+    }
+    
+    public void emptyTile() {
+    	this.l = Optional.empty();
+    	this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+    	this.setText(" ");
+    	this.setOpaque(false); 
     }
     
     public int myGetX() {

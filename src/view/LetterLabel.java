@@ -17,7 +17,7 @@ public class LetterLabel extends JLabel {
 
     public LetterLabel(Letter l, ScrabbleController controller) {
         this.l = l;
-        this.setText(l.getChar());
+        this.setText(l.getChar() + " : " + l.getPoints());
         this.setBackground(Color.GRAY);
         this.setOpaque(true);
         initializeHandler(controller);
@@ -44,3 +44,44 @@ public class LetterLabel extends JLabel {
         });
     }
 }
+
+//if (moveStart.getY() == moveEnd.getY()) {
+//// Check if valid word across entire horizontal row
+//ArrayList<Move> horizontal = this.checkHorizontal(x, y, 1);
+//if (horizontal != null) {
+//	// Then check if all vertical words are valid
+//	localScore += calculateScoreB(horizontal);
+//	for (Move m : currMoves) {
+//		ArrayList<Move> vertical = this.checkVertical(m.getX(), y, 2);
+//		if (vertical == null) {
+//			valid = false;
+//		}
+//		if (vertical.size() > 1) {
+//			localScore += calculateScoreB(vertical);
+//		}
+//		
+//	}	
+//} else {
+//	valid = false;
+//}
+//
+//} else {
+//// If vertical case then check vertical full length
+//ArrayList<Move> vertical = this.checkVertical(x, y, 1);
+//if (vertical != null) {
+//	// Then check all new horizontal cases
+//	localScore += calculateScoreB(vertical);
+//
+//	for (Move m : currMoves) {
+//		ArrayList<Move> horizontal = this.checkHorizontal(x, m.getY(), 2);
+//		if (horizontal == null) {
+//			valid = false;
+//		}
+//		if (horizontal.size() > 1) {
+//			localScore += calculateScoreB(horizontal);
+//		}
+//	}
+//} else {
+//	valid = false;
+//}
+//}

@@ -26,15 +26,37 @@ public class Tile {
 	// Optional used because a Tile may not have a letter
 	private Optional<Letter> occupyingL;
 	private int multiplier;
+	private int wordMultiplier;
+	private boolean multiUsed = false;
+	private boolean wordMultiUsed = false;
 	
-	public Tile(int multiplier) {
+	public Tile(int multiplier, int wordMultiplier) {
 		occupyingL = Optional.empty();
 		this.multiplier = multiplier;
+		this.wordMultiplier = wordMultiplier;
 	}
 	
 	// getter
 	public int getMulti() {
+		if (multiUsed) {
+			return 1;
+		}
 		return multiplier;
+	}
+	
+	public int getWordMulti() {
+		if (wordMultiUsed) {
+			return 1;
+		}
+		return wordMultiplier;
+	}
+	
+	public void usedMulti() {
+		multiUsed = true;
+	}
+	
+	public void usedWordMulti() {
+		wordMultiUsed = true;
 	}
 	
 	public boolean isUnoccupied() {

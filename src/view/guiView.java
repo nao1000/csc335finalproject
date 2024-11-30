@@ -28,17 +28,25 @@ import controller.ScrabbleController;
 
 public class guiView extends JFrame {
 
-    private ScrabbleController ctrl;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private ScrabbleController ctrl;
 
     private JPanel cards = new JPanel(new CardLayout());
     private CardLayout cl = (CardLayout) (cards.getLayout());
     
     ArrayList<Letter> discardList = new ArrayList<Letter>();
+    ArrayList<TileLabel> placedList = new ArrayList<TileLabel>();
 
     JPanel startPanel;
     JPanel mainPanel;
     ImagePanel boardPanel;
     JPanel handPanel;
+    JLabel score;
+    JLabel left;
 
     public guiView() {
         ctrl = new ScrabbleController();
@@ -109,12 +117,14 @@ public class guiView extends JFrame {
             gbc.gridx = i;
             for (int k = 0; k < 15; k++) {
                 gbc.gridy = k;
-                boardPanel.add(new TileLabel(i, k, data[k], ctrl), gbc);
+                boardPanel.add(new TileLabel(i, k, ctrl), gbc);
             }
             i++;
         }
 
         boardPanel.setPreferredSize(new Dimension(600,600));
+        score = new JLabel(ctrl.getScoreBoard());
+        left = new JLabel(String.valueOf(ctrl.tilesLeft()));
         
         // Wrap the board panel in another panel to center it
         JPanel wrapperPanel = new JPanel(new GridBagLayout());
@@ -129,6 +139,8 @@ public class guiView extends JFrame {
         wrapperPanel.add(boardPanel, wrapperGbc);
 
         // Add the wrapper panel to the main panel
+        mainPanel.add(score, BorderLayout.PAGE_START);
+        mainPanel.add(left, BorderLayout.WEST);
         mainPanel.add(wrapperPanel, BorderLayout.CENTER);
     }
 
@@ -175,50 +187,72 @@ public class guiView extends JFrame {
                 boolean response = ctrl.submitMove();
                 if (response) {
                 	mainPanel.remove(handPanel);
+                	LetterTransferHandler.clearPlacedList();
+                	score.setText(ctrl.getScoreBoard());
+                	left.setText(String.valueOf(ctrl.tilesLeft()));
                 	currHand();
-                	addButtons();
-                	
+                	addButtons();	
+                }
+                else {
+                	LetterTransferHandler.clearTileLabels();
                 }
             }
         });
     	
     	JButton discardButton = new JButton("Discard");
     	discardButton.setSize(new Dimension(50,50));
-    	discardButton.addActionListener(new ActionListener() {
-    		
-    		int count = 0;
-    		
-    		public void actionPerformed(ActionEvent e ) {
-    			if (count == 0) {
-    				for (Component c : handPanel.getComponents()) {
-    					if (c instanceof LetterLabel) {
-    						c.addMouseListener(new MouseAdapter() {
-    							
-    							public void mousePressed(MouseEvent e) {
-    								discardList.add(((LetterLabel) c).getLetter());
-    								c.setBackground(Color.GREEN);
-    							}
-    							
-    						});
-    					}
-    				}
-    				count++;
-    			}
-    			else {
-    				ctrl.discardLetters(discardList);
-    				discardList.clear();
-    				count = 0;
-    				currHand();
-    				addButtons();
-    				revalidate();
-    			}
+    	if (ctrl.tilesLeft() < 7) {
+    		discardButton.setBackground(Color.RED);
+    	}
+    	else {
+	    	discardButton.addActionListener(new ActionListener() {
+	    		
+	    		int count = 0;
+	    		
+	    		public void actionPerformed(ActionEvent e ) {
+	    			if (count == 0) {
+	    				LetterTransferHandler.clearTileLabels();
+	    				for (Component c : handPanel.getComponents()) {
+	    					if (c instanceof LetterLabel) {
+	    						c.addMouseListener(new MouseAdapter() {
+	    							
+	    							public void mousePressed(MouseEvent e) {
+	    								discardList.add(((LetterLabel) c).getLetter());
+	    								c.setBackground(Color.GREEN);
+	    							}
+	    							
+	    						});
+	    					}
+	    				}
+	    				count++;
+	    			}
+	    			else {
+	    				ctrl.discardLetters(discardList);
+	    				discardList.clear();
+	    				count = 0;
+	    				mainPanel.remove(handPanel);
+	    				ctrl.swapTurns();
+	    				currHand();
+	    				addButtons();
+	    				revalidate();
+	    			}
+	    		}
+	    		
+	    	});
+    	}
+    	JButton clearButton = new JButton("Clear");
+    	clearButton.setSize(new Dimension(50,50));
+    	clearButton.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			ctrl.clearMoves();
+    			LetterTransferHandler.clearTileLabels();
     		}
-    		
     	});
     	handPanel.add(submitButton);
     	handPanel.add(discardButton);
+    	handPanel.add(clearButton);
     	revalidate();
-    	
+ 
     }
 
 
