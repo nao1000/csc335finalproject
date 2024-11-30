@@ -37,7 +37,7 @@ public class LetterBag {
 		 * used in a complete game of Scrabble
 		 */
 		letterBag.clear();
-		for (int i = 0; i < 97; i++) {
+		for (int i = 0; i < 98; i++) {
 			letterBag.add(Letter.getLetter(i));
 		}
 	}

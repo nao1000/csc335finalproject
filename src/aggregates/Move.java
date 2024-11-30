@@ -83,18 +83,3 @@ public class Move {
 		return this.x == ((Move) other).getX() && this.y == ((Move) other).getY() && this.l == ((Move) other).getLetter();
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
