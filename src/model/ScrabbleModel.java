@@ -24,6 +24,7 @@ import java.util.function.Function;
 import aggregates.Letter;
 import aggregates.LetterBag;
 import aggregates.Move;
+import aggregates.Observer;
 import aggregates.Player;
 import aggregates.Tile;
 
@@ -38,6 +39,9 @@ public class ScrabbleModel {
 	private Random rand = new Random();
 	private Comparator<Move> cxy = new Move.CompareXY();
 
+	private List<Observer> aObservers = new ArrayList<>();
+	
+	
 	// Two Constructors Made
 	// Default Player names + original tests didn't take in the names
 	public ScrabbleModel() {
@@ -58,7 +62,20 @@ public class ScrabbleModel {
 		initializeHands();
 		currPlayer = player1;
 	}
-
+	
+	public void addObserver(Observer o) {
+		aObservers.add(o);
+	}
+	
+	private void notifyObserver(String updateTo, String name) {
+		for (Observer o : aObservers) {
+			if (o.getName().equals(name)) {
+				o.updateInfo(updateTo);
+				break;
+			}
+		}
+	}
+	
 	private void initializeBoard() {
 		/**
 		 * This private helper for the constructor creates the 15x15 board the game will
@@ -157,6 +174,7 @@ public class ScrabbleModel {
 		for (int i = 0; i < drawAmount; i++) {
 			currPlayer.addLetter(letterBag.draw(rand.nextInt(letterBag.size())));
 		}
+		notifyObserver(String.valueOf(letterBag.size()), "left");
 		clearMoves();
 	}
 
@@ -233,25 +251,28 @@ public class ScrabbleModel {
 		int y = moveStart.getY();
 		int localScore = 0;
 		boolean valid = true;
-		ArrayList<Move> mainWord;
+		ArrayList<Move> mainWord = new ArrayList<Move>();
+		ArrayList<Move> mainWordT1 = new ArrayList<Move>();
+		ArrayList<Move> mainWordT2 = new ArrayList<Move>();
 		ArrayList<Move> secondaryWord;
 
 		// If the move is a single letter
 		if (currMoves.size() == 1) {
-
-			// check horizontal
-			if (checkHorizontal(x, y, 2) == null) {
-				valid = false;
-			}
-			else {
-				localScore += calculateScoreB(this.checkHorizontal(x, y, 2));
-			}
+			
 			// check vertical
-			if (checkVertical(x, y, 2) == null) {
+			if ((mainWordT1 = checkVertical(x, y, 2)) == null) {
 				valid = false;
 			}
 			else {
 				localScore += calculateScoreB(this.checkVertical(x, y, 2));
+			}
+
+			// check horizontal
+			if ((mainWordT2 = checkHorizontal(x, y, 2)) == null) {
+				valid = false;
+			}
+			else {
+				localScore += calculateScoreB(this.checkHorizontal(x, y, 2));
 			}
 			
 			// make sure to multiply if necessary
@@ -260,6 +281,11 @@ public class ScrabbleModel {
 				// mark it as used
 				board[currMoves.get(0).getY()][currMoves.get(0).getY()].usedWordMulti();
 				currPlayer.addScore(localScore);
+				notifyObserver(scoreBoard(), "score");
+				
+				mainWord = mainWordT1.size() > mainWordT2.size() ? mainWordT1 : mainWordT2;
+				notifyObserver(currPlayer.getName() + " played the word " + makeStr(mainWord) + " for " 
+							+ String.valueOf(localScore) + " points!", "currPlay");
 				drawLetters();
 				changeTurns();
 				return true;
@@ -313,9 +339,20 @@ public class ScrabbleModel {
 
 		// change turns
 		currPlayer.addScore(localScore);
+		notifyObserver(scoreBoard(), "score");
+		notifyObserver(currPlayer.getName() + " played the word " + makeStr(mainWord) + " for " 
+					+ String.valueOf(localScore) + " points!", "currPlay");
 		drawLetters();
 		changeTurns();
 		return true;
+	}
+	
+	private String makeStr(ArrayList<Move> moveWord) {
+		String s = "";
+		for (Move m : moveWord) {
+			s += m.getLetter().getChar();
+		}
+		return s;
 	}
 
 	public int calculateScoreB(ArrayList<Move> arr) {

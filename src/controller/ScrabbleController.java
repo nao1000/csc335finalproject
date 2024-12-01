@@ -16,6 +16,7 @@ import java.util.List;
 
 import aggregates.Letter;
 import aggregates.Move;
+import aggregates.Observer;
 import model.ScrabbleModel;
 
 public class ScrabbleController {
@@ -111,5 +112,9 @@ public class ScrabbleController {
 		 * @return (String): the String repr of the score for each player
 		 */
 		return model.scoreBoard();
+	}
+	
+	public void addObserver(Observer o) {
+		model.addObserver(o);
 	}
 }

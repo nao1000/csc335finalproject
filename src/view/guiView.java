@@ -25,6 +25,9 @@ import javax.swing.*;
 
 import aggregates.Letter;
 import controller.ScrabbleController;
+import javax.swing.BorderFactory;
+import javax.swing.border.EmptyBorder;
+
 
 public class guiView extends JFrame {
 
@@ -72,6 +75,7 @@ public class guiView extends JFrame {
 
         mainPanel = new JPanel(new BorderLayout());
         mainPanel.setName("main");
+        mainPanel.setBorder(new EmptyBorder(10,10,10,10));
 
         cards.add(startPanel, startPanel.getName());
         cards.add(mainPanel, mainPanel.getName());
@@ -112,6 +116,8 @@ public class guiView extends JFrame {
 
         int i = 0;
         while (boardScanner.hasNextLine()) {
+            boardScanner.nextLine();
+
             gbc.gridx = i;
             for (int k = 0; k < 15; k++) {
                 gbc.gridy = k;
@@ -122,8 +128,10 @@ public class guiView extends JFrame {
         boardScanner.close();
 
         boardPanel.setPreferredSize(new Dimension(600,600));
-        score = new JLabel(ctrl.getScoreBoard());
-        left = new JLabel(String.valueOf(ctrl.tilesLeft()));
+        score = new InfoLabel(ctrl, "score");
+        left = new InfoLabel(ctrl, "left");
+        score.setText(ctrl.getScoreBoard());
+        left.setText(String.valueOf(ctrl.tilesLeft()));
         
         // Wrap the board panel in another panel to center it
         JPanel wrapperPanel = new JPanel(new GridBagLayout());
@@ -139,13 +147,33 @@ public class guiView extends JFrame {
 
         // Add the wrapper panel to the main panel
         mainPanel.add(score, BorderLayout.PAGE_START);
-        mainPanel.add(left, BorderLayout.WEST);
+        
+        JPanel infoPanel = new JPanel(new GridBagLayout());
+        infoPanel.setPreferredSize(new Dimension(200,100));
+        GridBagConstraints infoGBC = new GridBagConstraints();
+        infoGBC.insets = new Insets(5,5,5,5);
+        infoGBC.gridx=0;
+        infoGBC.gridy=0;
+        infoGBC.anchor = GridBagConstraints.WEST;
+        infoPanel.setBorder(BorderFactory.createTitledBorder("GameInfo"));
+        InfoLabel playedWord = new InfoLabel(ctrl, "currPlay");
+        infoPanel.add(left, infoGBC);
+        infoGBC.gridy++;
+        infoPanel.add(playedWord, infoGBC);
+        
+        JPanel emptyPanel = new JPanel();
+        emptyPanel.setPreferredSize(new Dimension(200,50));
+        infoGBC.gridy++;
+        infoPanel.add(emptyPanel, infoGBC);
+        
+        mainPanel.add(infoPanel, BorderLayout.EAST);
         mainPanel.add(wrapperPanel, BorderLayout.CENTER);
     }
 
 
     private void currHand() {
         handPanel = new JPanel();
+        handPanel.setBorder(new EmptyBorder(10,0,0,0));
         handPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -187,8 +215,8 @@ public class guiView extends JFrame {
                 if (response) {
                 	mainPanel.remove(handPanel);
                 	LetterTransferHandler.clearPlacedList();
-                	score.setText(ctrl.getScoreBoard());
-                	left.setText(String.valueOf(ctrl.tilesLeft()));
+                	//score.setText(ctrl.getScoreBoard());
+                	//left.setText(String.valueOf(ctrl.tilesLeft()));
                 	currHand();
                 	addButtons();	
                 }
