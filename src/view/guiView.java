@@ -112,8 +112,6 @@ public class guiView extends JFrame {
 
         int i = 0;
         while (boardScanner.hasNextLine()) {
-            String data[] = boardScanner.nextLine().split(" ");
-
             gbc.gridx = i;
             for (int k = 0; k < 15; k++) {
                 gbc.gridy = k;
@@ -121,6 +119,7 @@ public class guiView extends JFrame {
             }
             i++;
         }
+        boardScanner.close();
 
         boardPanel.setPreferredSize(new Dimension(600,600));
         score = new JLabel(ctrl.getScoreBoard());
