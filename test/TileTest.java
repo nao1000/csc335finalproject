@@ -77,7 +77,6 @@ public class TileTest {
 		secondTile.placeLetterTile(Letter.getLetter(0));
 		secondTile.usedMulti();
 		assertEquals(1, secondTile.getMulti());
-		
 	}
 	
 	@Test
@@ -85,7 +84,6 @@ public class TileTest {
 		secondTile.placeLetterTile(Letter.getLetter(0));
 		secondTile.usedWordMulti();
 		assertEquals(1, secondTile.getWordMulti());
-		
 	}
 	
 	

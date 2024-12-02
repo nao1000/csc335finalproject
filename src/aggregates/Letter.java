@@ -15,8 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Scanner;
 
-public class Letter implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class Letter{
 	/**
 	 * This class represents a Letter object for the game of Scrabble.
 	 * The letters in the game are known in advance and each tile is unique

@@ -8,7 +8,10 @@ import aggregates.Letter;
 import controller.ScrabbleController;
 
 public class TileLabel extends JLabel {
-    private Optional<Letter> l;
+    /**
+	 * 
+	 */
+	private Optional<Letter> l;
     private int x, y;
 
     public TileLabel(int x, int y, ScrabbleController controller) {

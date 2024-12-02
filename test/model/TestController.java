@@ -22,7 +22,7 @@ public class TestController {
 	
 	@Test
 	public void testGetScore() {
-		assertEquals(ctrl.getScore(), 0);
+		assertEquals(ctrl.getScoreBoard(), "Player One 0 0 Player Two");
 	}
 	
 	@Test

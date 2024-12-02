@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class LetterTransferHandler extends TransferHandler {
-    private DataFlavor letterFlavor = new DataFlavor(Letter.class, "Letter");
+	private DataFlavor letterFlavor = new DataFlavor(Letter.class, "Letter");
     private ScrabbleController controller;
     private static ArrayList<TileLabel> placedList = new ArrayList<TileLabel>();
 
