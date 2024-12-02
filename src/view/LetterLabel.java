@@ -13,7 +13,10 @@ import controller.ScrabbleController;
 
 public class LetterLabel extends JLabel {
 
-    private Letter l;
+    /**
+	 * 
+	 */
+	private Letter l;
 
     public LetterLabel(Letter l, ScrabbleController controller) {
         this.l = l;
