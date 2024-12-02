@@ -134,46 +134,47 @@ public class guiView extends JFrame {
         left.setText(String.valueOf(ctrl.tilesLeft()));
         
         // Wrap the board panel in another panel to center it
-        JPanel wrapperPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints wrapperGbc = new GridBagConstraints();
-        wrapperGbc.gridx = 0;
-        wrapperGbc.gridy = 0;
-        wrapperGbc.weightx = 1.0;
-        wrapperGbc.weighty = 1.0;
-        wrapperGbc.anchor = GridBagConstraints.CENTER;
+        JPanel wrapperPanel = new JPanel();
+//        GridBagConstraints wrapperGbc = new GridBagConstraints();
+//        wrapperGbc.gridx = 0;
+//        wrapperGbc.gridy = 0;
+//        wrapperGbc.weightx = 1.0;
+//        wrapperGbc.weighty = 1.0;
+//        wrapperGbc.anchor = GridBagConstraints.CENTER;
 
         // Add the board panel to the wrapper panel
-        wrapperPanel.add(boardPanel, wrapperGbc);
+        wrapperPanel.add(boardPanel, BorderLayout.WEST);
 
-        // Add the wrapper panel to the main panel
-        mainPanel.add(score, BorderLayout.PAGE_START);
+       
+        
+      
         
         JPanel infoPanel = new JPanel(new GridBagLayout());
-        infoPanel.setPreferredSize(new Dimension(200,100));
         GridBagConstraints infoGBC = new GridBagConstraints();
+        infoPanel.setSize(new Dimension(400,600));
         infoGBC.insets = new Insets(5,5,5,5);
         infoGBC.gridx=0;
         infoGBC.gridy=0;
-        infoGBC.anchor = GridBagConstraints.WEST;
+        infoGBC.fill = GridBagConstraints.HORIZONTAL;
+        infoGBC.anchor = GridBagConstraints.CENTER;
         infoPanel.setBorder(BorderFactory.createTitledBorder("GameInfo"));
         InfoLabel playedWord = new InfoLabel(ctrl, "currPlay");
+        infoPanel.add(score, infoGBC);
+        infoGBC.gridy++;
         infoPanel.add(left, infoGBC);
         infoGBC.gridy++;
+        
         infoPanel.add(playedWord, infoGBC);
         
-        JPanel emptyPanel = new JPanel();
-        emptyPanel.setPreferredSize(new Dimension(200,50));
-        infoGBC.gridy++;
-        infoPanel.add(emptyPanel, infoGBC);
-        
-        mainPanel.add(infoPanel, BorderLayout.EAST);
+        wrapperPanel.add(infoPanel, BorderLayout.EAST);
+        //mainPanel.add(infoPanel, BorderLayout.EAST);
         mainPanel.add(wrapperPanel, BorderLayout.CENTER);
     }
 
 
     private void currHand() {
         handPanel = new JPanel();
-        handPanel.setBorder(new EmptyBorder(10,0,0,0));
+        handPanel.setBorder(BorderFactory.createTitledBorder("Player's Hand"));
         handPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);

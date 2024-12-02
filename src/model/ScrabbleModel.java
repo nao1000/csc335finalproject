@@ -277,6 +277,7 @@ public class ScrabbleModel {
 			
 			// make sure to multiply if necessary
 			if (valid) {
+				localScore -= currMoves.get(0).getLetter().getPoints();
 				localScore *= board[currMoves.get(0).getY()][currMoves.get(0).getY()].getWordMulti();
 				// mark it as used
 				board[currMoves.get(0).getY()][currMoves.get(0).getY()].usedWordMulti();
@@ -317,7 +318,12 @@ public class ScrabbleModel {
 						break;
 					}
 					if (secondaryWord.size() > 1) {
-						localScore += calculateScoreB(secondaryWord);
+						for (Move m2 : currMoves) {
+							if (secondaryWord.contains(m2)) {						
+								localScore += calculateScoreB(secondaryWord);
+								break;
+							}
+						}
 					}
 				}
 			} else {
