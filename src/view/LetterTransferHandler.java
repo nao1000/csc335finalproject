@@ -59,6 +59,7 @@ public class LetterTransferHandler extends TransferHandler {
           
             TileLabel label = (TileLabel) support.getComponent();
             label.setLetter(letter);
+            label.setBackground(Color.YELLOW);
        
             // Call method on ScrabbleController
             controller.makeMove(label.getLetter(), label.myGetX(), label.myGetY());
@@ -98,7 +99,6 @@ public class LetterTransferHandler extends TransferHandler {
     
     public static void clearTileLabels() {
     	for (TileLabel tl : placedList) {
-    		tl.getLetter().setInUse(false);
     		tl.emptyTile();
     	}
     	placedList.clear();
@@ -109,6 +109,11 @@ public class LetterTransferHandler extends TransferHandler {
     }
     
     public static void clearPlacedList() {
+    	for (TileLabel tl: placedList) {
+    		tl.setForeground(Color.BLACK);
+            tl.setOpaque(true); 
+            tl.setBackground(Color.LIGHT_GRAY);
+    	}
     	placedList.clear();
     }
 }

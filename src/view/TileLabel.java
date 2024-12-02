@@ -8,12 +8,7 @@ import aggregates.Letter;
 import controller.ScrabbleController;
 
 public class TileLabel extends JLabel {
-<<<<<<< HEAD
-=======
-    /**
-	 * 
-	 */
->>>>>>> origin/main
+
 	private Optional<Letter> l;
     private int x, y;
 
@@ -24,13 +19,11 @@ public class TileLabel extends JLabel {
         initializeHandler(controller);
         this.l = Optional.empty();
 
-        // Set preferred size for visibility
-        this.setSize(new Dimension(40, 40)); 
-
-        // Set text color and background for visibility
+        Dimension fixedSize = new Dimension(40,40);
+        this.setMinimumSize(fixedSize);
+        this.setPreferredSize(fixedSize);
+        this.setMaximumSize(fixedSize);
         
-
-        // Add a border for debugging purposes
         this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
     }
 

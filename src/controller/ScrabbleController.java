@@ -90,7 +90,7 @@ public class ScrabbleController {
 		 * This method simply clears all of the move objects
 		 * from the model. 
 		 */
-		model.clearMoves();
+		model.undoMoves();
 	}
 	
 	public void swapTurns() {
@@ -116,5 +116,21 @@ public class ScrabbleController {
 	
 	public void addObserver(Observer o) {
 		model.addObserver(o);
+	}
+	
+	public String getCurrName() {
+		return model.getCurrPlayerName();
+	}
+	
+	public void quitGame() {
+		model.forceEnd();
+	}
+	
+	public void startOver() {
+		model.playAgain();
+	}
+	
+	public void delObservers() {
+		model.deleteObservers();
 	}
 }

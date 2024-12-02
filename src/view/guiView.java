@@ -18,7 +18,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Scanner;
 
 import javax.swing.*;
@@ -26,7 +25,7 @@ import javax.swing.*;
 import aggregates.Letter;
 import controller.ScrabbleController;
 import javax.swing.BorderFactory;
-import javax.swing.border.EmptyBorder;
+
 
 
 public class guiView extends JFrame {
@@ -47,21 +46,21 @@ public class guiView extends JFrame {
     JPanel startPanel;
     JPanel mainPanel;
     ImagePanel boardPanel;
+    JPanel wrapperPanel;
     JPanel handPanel;
     JLabel score;
     JLabel left;
 
     public guiView() {
-        ctrl = new ScrabbleController();
         setUp();
         start();
     }
 
     private void setUp() {
-    	GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		gd.setFullScreenWindow(this);
+//    	GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+//		gd.setFullScreenWindow(this);
         this.setName("Scrabble");
-  
+        this.setSize(1800,800);
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent windowEvent) {
                 System.exit(0);
@@ -75,7 +74,7 @@ public class guiView extends JFrame {
 
         mainPanel = new JPanel(new BorderLayout());
         mainPanel.setName("main");
-        mainPanel.setBorder(new EmptyBorder(10,10,10,10));
+        
 
         cards.add(startPanel, startPanel.getName());
         cards.add(mainPanel, mainPanel.getName());
@@ -84,22 +83,57 @@ public class guiView extends JFrame {
         cl.show(cards, "start");
 
         startMenu();
-        makeBoard();
-        currHand();
-        addButtons();
+        
     }
 
     private void startMenu() {
+        startPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+
         JButton startButton = new JButton("Start Game");
+        startPanel.add(startButton, gbc);
+
+        gbc.gridy++;
+        JLabel player1 = new JLabel("Enter Player One Name");
+        startPanel.add(player1, gbc);
+
+        gbc.gridx++;
+        JTextField player1Name = new JTextField();
+        player1Name.setPreferredSize(new Dimension(200, 30)); // Set preferred size
+        startPanel.add(player1Name, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        JLabel player2 = new JLabel("Enter Player Two Name");
+        startPanel.add(player2, gbc);
+
+        gbc.gridx++;
+        JTextField player2Name = new JTextField();
+        player2Name.setPreferredSize(new Dimension(200, 30)); // Set preferred size
+        startPanel.add(player2Name, gbc);
+
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (player1Name.getText().isEmpty() && player2Name.getText().isEmpty()) {
+                    ctrl = new ScrabbleController();
+                } else {
+                    ctrl = new ScrabbleController(player1Name.getText(), player2Name.getText());
+                }
+                makeBoard();
+                currHand();
+                addButtons();
                 cl.show(cards, "main");
             }
         });
 
-        startPanel.add(startButton);
+        startPanel.revalidate();
+        startPanel.repaint();
     }
+
 
     private void makeBoard() {
         String boardStr = ctrl.currentModel();
@@ -131,24 +165,11 @@ public class guiView extends JFrame {
         score = new InfoLabel(ctrl, "score");
         left = new InfoLabel(ctrl, "left");
         score.setText(ctrl.getScoreBoard());
-        left.setText(String.valueOf(ctrl.tilesLeft()));
+        left.setText("Tiles Remaining: " + String.valueOf(ctrl.tilesLeft()));
         
         // Wrap the board panel in another panel to center it
-        JPanel wrapperPanel = new JPanel();
-//        GridBagConstraints wrapperGbc = new GridBagConstraints();
-//        wrapperGbc.gridx = 0;
-//        wrapperGbc.gridy = 0;
-//        wrapperGbc.weightx = 1.0;
-//        wrapperGbc.weighty = 1.0;
-//        wrapperGbc.anchor = GridBagConstraints.CENTER;
-
-        // Add the board panel to the wrapper panel
-        wrapperPanel.add(boardPanel, BorderLayout.WEST);
-
-       
-        
-      
-        
+        wrapperPanel = new JPanel();
+        wrapperPanel.add(boardPanel, BorderLayout.WEST);  
         JPanel infoPanel = new JPanel(new GridBagLayout());
         GridBagConstraints infoGBC = new GridBagConstraints();
         infoPanel.setSize(new Dimension(400,600));
@@ -167,14 +188,13 @@ public class guiView extends JFrame {
         infoPanel.add(playedWord, infoGBC);
         
         wrapperPanel.add(infoPanel, BorderLayout.EAST);
-        //mainPanel.add(infoPanel, BorderLayout.EAST);
         mainPanel.add(wrapperPanel, BorderLayout.CENTER);
     }
 
 
     private void currHand() {
         handPanel = new JPanel();
-        handPanel.setBorder(BorderFactory.createTitledBorder("Player's Hand"));
+        handPanel.setBorder(BorderFactory.createTitledBorder(ctrl.getCurrName()));
         handPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -216,13 +236,12 @@ public class guiView extends JFrame {
                 if (response) {
                 	mainPanel.remove(handPanel);
                 	LetterTransferHandler.clearPlacedList();
-                	//score.setText(ctrl.getScoreBoard());
-                	//left.setText(String.valueOf(ctrl.tilesLeft()));
                 	currHand();
                 	addButtons();	
-                }
+                } 
                 else {
                 	LetterTransferHandler.clearTileLabels();
+    
                 }
             }
         });
@@ -256,6 +275,7 @@ public class guiView extends JFrame {
 	    			}
 	    			else {
 	    				ctrl.discardLetters(discardList);
+	    				LetterTransferHandler.clearPlacedList();
 	    				discardList.clear();
 	    				count = 0;
 	    				mainPanel.remove(handPanel);
@@ -276,9 +296,40 @@ public class guiView extends JFrame {
     			LetterTransferHandler.clearTileLabels();
     		}
     	});
+    	
+    	JButton quitButton = new JButton("Quit");
+    	quitButton.setSize(new Dimension(50,50));
+    	quitButton.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			ctrl.quitGame();
+    			int response = JOptionPane.showConfirmDialog(
+    				    mainPanel, 
+    				    "Do you want to play again?", 
+    				    "Play Again", 
+    				    JOptionPane.YES_NO_OPTION
+    				);
+
+    				if (response == JOptionPane.YES_OPTION) {
+    				    // Handle playing again
+    				    ctrl.startOver();
+    				    mainPanel.remove(handPanel);
+    				    mainPanel.remove(wrapperPanel);
+    				    ctrl.delObservers();
+    				    makeBoard();
+    				    currHand();
+	    				addButtons();
+	    				revalidate();
+    				} else if (response == JOptionPane.NO_OPTION) {
+    				    // Handle not playing again
+    				    System.exit(0);
+    				}
+
+    		}
+    	});
     	handPanel.add(submitButton);
     	handPanel.add(discardButton);
     	handPanel.add(clearButton);
+    	handPanel.add(quitButton);
     	revalidate();
  
     }

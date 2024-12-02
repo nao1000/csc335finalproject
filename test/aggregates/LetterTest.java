@@ -1,3 +1,4 @@
+package aggregates;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
