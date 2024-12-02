@@ -12,7 +12,8 @@ import aggregates.Tile;
 public class TileTest {
 	
 	
-	Tile firstTile = new Tile(3);
+	Tile firstTile = new Tile(3, 1);
+	Tile secondTile = new Tile(4, 2);
 	
 	@Test
 	public void getMult() {
@@ -58,5 +59,35 @@ public class TileTest {
 		firstTile.placeLetterTile(Letter.getLetter(0));
 		assertEquals("E ", firstTile.toString());
 	}
+	
+	@Test
+	public void getMulti() {
+		secondTile.placeLetterTile(Letter.getLetter(0));
+		assertEquals(4, secondTile.getMulti());
+	}
+	
+	@Test
+	public void getWordMulti() {
+		secondTile.placeLetterTile(Letter.getLetter(0));
+		assertEquals(2, secondTile.getWordMulti());
+	}
+	
+	@Test
+	public void usedMulti() {
+		secondTile.placeLetterTile(Letter.getLetter(0));
+		secondTile.usedMulti();
+		assertEquals(1, secondTile.getMulti());
+		
+	}
+	
+	@Test
+	public void usedWordMulti() {
+		secondTile.placeLetterTile(Letter.getLetter(0));
+		secondTile.usedWordMulti();
+		assertEquals(1, secondTile.getWordMulti());
+		
+	}
+	
+	
 
 }
