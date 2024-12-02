@@ -16,7 +16,7 @@ public class ImagePanel extends JPanel {
     /**
 	 * Eclipse told us to add this
 	 */
-	private static final long serialVersionUID = 1L;
+
 	private BufferedImage image;
  
     public ImagePanel(String imagePath) {

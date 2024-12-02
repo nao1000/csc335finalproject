@@ -12,9 +12,10 @@ package aggregates;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.Scanner;
 
-public class Letter {
+public class Letter{
 	/**
 	 * This class represents a Letter object for the game of Scrabble.
 	 * The letters in the game are known in advance and each tile is unique
