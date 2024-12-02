@@ -79,7 +79,7 @@ public class Letter{
 		return LETTER_PILE[i];
 	}
 	
-	public void setInUse(boolean inUse) {
+	protected void setInUse(boolean inUse) {
 		this.inUse = inUse;
 	}
 	
@@ -89,6 +89,6 @@ public class Letter{
 	
 	@Override
 	public String toString() {
-		return letter + " ";
+		return letter + " : " + String.valueOf(points);
 	}
 }

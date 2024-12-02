@@ -38,6 +38,7 @@ public class LetterBag {
 		 */
 		letterBag.clear();
 		for (int i = 0; i < 98; i++) {
+			Letter.getLetter(i).setInUse(false);
 			letterBag.add(Letter.getLetter(i));
 		}
 	}

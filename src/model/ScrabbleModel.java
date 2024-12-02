@@ -12,14 +12,12 @@
 package model;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.function.Function;
 
 import aggregates.Letter;
 import aggregates.LetterBag;
@@ -40,6 +38,8 @@ public class ScrabbleModel {
 	private Comparator<Move> cxy = new Move.CompareXY();
 
 	private List<Observer> aObservers = new ArrayList<>();
+	private List<Observer> letterObservers = new ArrayList<>();
+	
 	
 	
 	// Two Constructors Made
@@ -74,6 +74,10 @@ public class ScrabbleModel {
 				break;
 			}
 		}
+	}
+	
+	public void deleteObservers() {
+		aObservers.clear();
 	}
 	
 	private void initializeBoard() {
@@ -174,7 +178,7 @@ public class ScrabbleModel {
 		for (int i = 0; i < drawAmount; i++) {
 			currPlayer.addLetter(letterBag.draw(rand.nextInt(letterBag.size())));
 		}
-		notifyObserver(String.valueOf(letterBag.size()), "left");
+		notifyObserver("Tiles Remaining: " + String.valueOf(letterBag.size()), "left");
 		clearMoves();
 	}
 
@@ -263,7 +267,7 @@ public class ScrabbleModel {
 			if ((mainWordT1 = checkVertical(x, y, 2)) == null) {
 				valid = false;
 			}
-			else {
+			else if (mainWordT2.size() > 1){
 				localScore += calculateScoreB(this.checkVertical(x, y, 2));
 			}
 
@@ -271,8 +275,13 @@ public class ScrabbleModel {
 			if ((mainWordT2 = checkHorizontal(x, y, 2)) == null) {
 				valid = false;
 			}
-			else {
+			else if (mainWordT2.size() > 1){
 				localScore += calculateScoreB(this.checkHorizontal(x, y, 2));
+			}
+			
+			if (localScore == 0) {
+				valid = false;
+				
 			}
 			
 			// make sure to multiply if necessary
@@ -317,7 +326,12 @@ public class ScrabbleModel {
 						break;
 					}
 					if (secondaryWord.size() > 1) {
-						localScore += calculateScoreB(secondaryWord);
+						for (Move m2 : currMoves) {
+							if (secondaryWord.contains(m2)) {						
+								localScore += calculateScoreB(secondaryWord);
+								break;
+							}
+						}
 					}
 				}
 			} else {
@@ -326,6 +340,8 @@ public class ScrabbleModel {
 		}
 		if (!valid) {
 			undoMoves();
+			notifyObserver(currPlayer.getName() + " played an invalid word " 
+					+ makeStr(mainWord) + "... Try again", "currPlay");
 			return false;
 		}
 
@@ -354,7 +370,20 @@ public class ScrabbleModel {
 		}
 		return s;
 	}
+	
+	public boolean isGameOver() {
+		if (this.getCurrHand().size() == 0) {
+			winningMessage();
+			return true;
+		}
+		return false;
+	}
 
+	public void winningMessage() {
+		String winning = "GAME OVER: " + currPlayer.getName() + " has WON!";
+		notifyObserver(winning, "currPlay");
+	}
+	
 	public int calculateScoreB(ArrayList<Move> arr) {
 		/**
 		 * This method calculates the score for a given word.
@@ -507,11 +536,11 @@ public class ScrabbleModel {
 		 * 
 		 * @return (boolean): whether or not it is a word
 		 */
+		System.out.println("New  " + moves.toString());
 		StringBuffer str = new StringBuffer();
 		for (Move m : moves) {
-			str.append(m.getLetter().toString().strip());
+			str.append(m.getLetter().getChar());
 		}
-	
 		return dictionary.isWord(str.toString());
 	}
 
@@ -566,8 +595,27 @@ public class ScrabbleModel {
 		 * 
 		 * @return (String): a score board as "<player1> score score <player2>"
 		 */
-		return player1.getName() + " " + String.valueOf(player1.getScore()) + "  " + String.valueOf(player2.getScore())
-				+ " " + player2.getName();
+		return "<html>" + player1.getName() + " " + String.valueOf(player1.getScore()) + "<br>" 
+				+ player2.getName() + " " + String.valueOf(player2.getScore()) + "</html>";
+	}
+	
+	public String getCurrPlayerName() {
+		return currPlayer.getName();
+	}
+	
+	public void forceEnd() {
+		Player winner = currPlayer == player1 ? player2 : player1;
+		String endMessage = "<html>" + currPlayer.getName() + " has forfeited! <br>" 
+				+ winner.getName() + " has won!</html>";
+		notifyObserver(endMessage, "currPlay");
 	}
 
+	public void playAgain() {
+		initializeBoard();
+		letterBag.fillBag();
+		player1 = new Player(player1.getName(), Player.PlayerNum.ONE);
+		player2 = new Player(player2.getName(), Player.PlayerNum.TWO);
+		initializeHands();
+		currPlayer = player1;
+	}
 }

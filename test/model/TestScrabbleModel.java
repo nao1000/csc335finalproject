@@ -21,7 +21,7 @@ class TestScrabbleModel {
 	@Test
 	void testAddingDirectlyToRight() {
 		ScrabbleModel model = new ScrabbleModel();
-
+ 
 		// Add the word "con"
 		model.makeMove(Letter.getLetter(77), 7, 7);
 		model.makeMove(Letter.getLetter(30), 8, 7);
