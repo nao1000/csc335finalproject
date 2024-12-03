@@ -12,7 +12,7 @@ package aggregates;
 
 import java.util.Comparator;
 
-public class Move {
+public class Move implements Comparable<Move> {
 	/**
 	 * This class represents a move a player is trying to make in the game.
 	 * It really just words as a tuple of (x,y,letter) and used by the model
@@ -56,18 +56,6 @@ public class Move {
 		return "(" + x + ", " + y + ") " + l.toString();
 	}
 	
-	public static class CompareXY implements Comparator<Move> {
-		/** 
-		 * This Comparator<Move> compares Move objects via their (x,y) cord values
-		 */
-		
-		public int compare(Move m1, Move m2) {
-			if (m1.getX() == m2.getX()) {
-				return m1.getY() - m2.getY();
-			}
-			return m1.getX() - m2.getX();	
-		}
-	}
 	
 	@Override
 	public boolean equals(Object other) {
@@ -81,5 +69,12 @@ public class Move {
 			return false;
 		}
 		return this.x == ((Move) other).getX() && this.y == ((Move) other).getY() && this.l == ((Move) other).getLetter();
+	}
+
+	public int compareTo(Move other) {
+		if (this.getX() == other.getX()) {
+			return this.getY() - other.getY();
+		}
+		return this.getX() - other.getX();
 	}
 }

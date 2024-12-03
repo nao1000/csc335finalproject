@@ -35,7 +35,6 @@ public class ScrabbleModel {
 	private Player player1, player2;
 	private Player currPlayer;
 	private Random rand = new Random();
-	private Comparator<Move> cxy = new Move.CompareXY();
 
 	private List<Observer> aObservers = new ArrayList<>();
 	private List<Observer> letterObservers = new ArrayList<>();
@@ -179,7 +178,7 @@ public class ScrabbleModel {
 			currPlayer.addLetter(letterBag.draw(rand.nextInt(letterBag.size())));
 		}
 		notifyObserver("Tiles Remaining: " + String.valueOf(letterBag.size()), "left");
-		undoMoves();
+		clearMoves();
 	}
 
 	public void makeMove(Letter l, int x, int y) {
@@ -221,6 +220,12 @@ public class ScrabbleModel {
 		currMoves.clear();
 	}
 
+	public void clearMoves() {
+		/**
+		 * This method simply clears the current moves after a change in turns
+		 */
+		currMoves.clear();
+	}
 
 	public boolean implementCurrentMove() {
 		/**
@@ -232,11 +237,11 @@ public class ScrabbleModel {
 		 * 
 		 */
 
-		Collections.sort(currMoves, cxy);
+		Collections.sort(currMoves);
 
 		// make sure letters touch existing letters or starts at (7,7)
 		if (!adjacentCheck()) {
-			this.undoMoves();
+			this.clearMoves();
 			return false;
 		}
 
@@ -412,7 +417,7 @@ public class ScrabbleModel {
 		return multi;
 	}
 
-	private boolean adjacentCheck() {
+	public boolean adjacentCheck() {
 		/**
 		 * This method validates the placement of tiles before they are actually placed.
 		 * To start a game in Scrabble, the first word must use the center tile. All
