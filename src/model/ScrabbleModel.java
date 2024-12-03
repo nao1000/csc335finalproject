@@ -179,7 +179,7 @@ public class ScrabbleModel {
 			currPlayer.addLetter(letterBag.draw(rand.nextInt(letterBag.size())));
 		}
 		notifyObserver("Tiles Remaining: " + String.valueOf(letterBag.size()), "left");
-		clearMoves();
+		undoMoves();
 	}
 
 	public void makeMove(Letter l, int x, int y) {
@@ -221,12 +221,6 @@ public class ScrabbleModel {
 		currMoves.clear();
 	}
 
-	public void clearMoves() {
-		/**
-		 * This method simply clears the current moves after a change in turns
-		 */
-		currMoves.clear();
-	}
 
 	public boolean implementCurrentMove() {
 		/**
@@ -242,7 +236,7 @@ public class ScrabbleModel {
 
 		// make sure letters touch existing letters or starts at (7,7)
 		if (!adjacentCheck()) {
-			this.clearMoves();
+			this.undoMoves();
 			return false;
 		}
 
