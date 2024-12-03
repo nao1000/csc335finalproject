@@ -14,399 +14,10 @@ import aggregates.Letter;
 
 class TestScrabbleModel {
 
-	static DictionaryTrie trie = new DictionaryTrie();
-
-	
-	// Basic horizontal test cases
-	@Test
-	void testAddingDirectlyToRight() {
-		ScrabbleModel model = new ScrabbleModel();
- 
-		// Add the word "con"
-		model.makeMove(Letter.getLetter(77), 7, 7);
-		model.makeMove(Letter.getLetter(30), 8, 7);
-		model.makeMove(Letter.getLetter(38), 9, 7);
-
-		System.out.println(model.toString());
-
-		assertTrue(model.implementCurrentMove());
-
-		// Add word "test" directly to the write of "con"
-		model.makeMove(Letter.getLetter(50), 10, 7);
-		model.makeMove(Letter.getLetter(0), 11, 7);
-		model.makeMove(Letter.getLetter(60), 12, 7);
-		model.makeMove(Letter.getLetter(51), 13, 7);
-		System.out.println(model.toString());
-		assertTrue(model.implementCurrentMove());
-
-	}
-
-	
-	// Basic horizontal test cases
-	@Test
-	void testAddingDirectlyToRightWithCustomPlayerNames() {
-		ScrabbleModel model = new ScrabbleModel("Player 1", "Player 2");
-
-		// Add the word "con"
-		model.makeMove(Letter.getLetter(77), 7, 7);
-		model.makeMove(Letter.getLetter(30), 8, 7);
-		model.makeMove(Letter.getLetter(38), 9, 7);
-
-		System.out.println(model.toString());
-
-		assertTrue(model.implementCurrentMove());
-
-		// Add word "test" directly to the write of "con"
-		model.makeMove(Letter.getLetter(50), 10, 7);
-		model.makeMove(Letter.getLetter(0), 11, 7);
-		model.makeMove(Letter.getLetter(60), 12, 7);
-		model.makeMove(Letter.getLetter(51), 13, 7);
-		System.out.println(model.toString());
-		assertTrue(model.implementCurrentMove());
-
-	}
-	
-	
-	@Test
-	void testAddingSingleLetterDirectlyToRight() {
-		ScrabbleModel model = new ScrabbleModel();
-
-		// Add the word "con"
-		model.makeMove(Letter.getLetter(77), 7, 7);
-		model.makeMove(Letter.getLetter(30), 8, 7);
-		model.makeMove(Letter.getLetter(38), 9, 7);
-
-		System.out.println(model.toString());
-
-		assertTrue(model.implementCurrentMove());
-
-		// Add letter "e" directly to the write of "con"
-		model.makeMove(Letter.getLetter(0), 10, 7);
-		System.out.println(model.toString());
-		assertTrue(model.implementCurrentMove());
-
-	}
+	ScrabbleModel model = new ScrabbleModel();
 
 	@Test
-	void testAddingSingleLetterDirectlyToLeft() {
-		ScrabbleModel model = new ScrabbleModel();
-
-		// Add the word "con"
-		model.makeMove(Letter.getLetter(77), 7, 7);
-		model.makeMove(Letter.getLetter(30), 8, 7);
-		model.makeMove(Letter.getLetter(38), 9, 7);
-
-		System.out.println(model.toString());
-
-		assertTrue(model.implementCurrentMove());
-
-		// Add letter "e" directly to the write of "con"
-		model.makeMove(Letter.getLetter(0), 10, 7);
-		System.out.println(model.toString());
-
-		// Add letter "s" directly to the left of "cone"
-		model.makeMove(Letter.getLetter(60), 6, 7);
-		System.out.println(model.toString());
-
-		assertTrue(model.implementCurrentMove());
-
-	}
-
-
-
-	
-	
-	@Test
-	void testAddingDirectlyToLeft() {
-		ScrabbleModel model = new ScrabbleModel();
-
-		// Add the word "test"
-		model.makeMove(Letter.getLetter(50), 7, 7);
-		model.makeMove(Letter.getLetter(0), 8, 7);
-		model.makeMove(Letter.getLetter(60), 9, 7);
-		model.makeMove(Letter.getLetter(51), 10, 7);
-		System.out.println(model.toString());
-		assertTrue(model.implementCurrentMove());
-
-		// Add the word "con" directly to the right of test
-		model.makeMove(Letter.getLetter(77), 4, 7);
-		model.makeMove(Letter.getLetter(30), 5, 7);
-		model.makeMove(Letter.getLetter(38), 6, 7);
-		System.out.println(model.toString());
-		assertTrue(model.implementCurrentMove());
-
-	}
-	
-	@Test
-	void testAddingInvalidDirectlyToRight() {
-		ScrabbleModel model = new ScrabbleModel();
-
-		// Add the word "con"
-		model.makeMove(Letter.getLetter(77), 7, 7);
-		model.makeMove(Letter.getLetter(30), 8, 7);
-		model.makeMove(Letter.getLetter(38), 9, 7);
-
-		System.out.println(model.toString());
-
-		assertTrue(model.implementCurrentMove());
-
-		// Add word "eeee" directly to the right of "con"
-		model.makeMove(Letter.getLetter(0), 10, 7);
-		model.makeMove(Letter.getLetter(1), 11, 7);
-		model.makeMove(Letter.getLetter(2), 12, 7);
-		model.makeMove(Letter.getLetter(3), 13, 7);
-		System.out.println(model.toString());
-		assertFalse(model.implementCurrentMove());
-
-	}
-	
-	@Test
-	void testAddingInvalidDirectlyToLeft() {
-		ScrabbleModel model = new ScrabbleModel();
-
-		// Add the word "con"
-		model.makeMove(Letter.getLetter(77), 7, 7);
-		model.makeMove(Letter.getLetter(30), 8, 7);
-		model.makeMove(Letter.getLetter(38), 9, 7);
-
-		System.out.println(model.toString());
-
-		assertTrue(model.implementCurrentMove());
-
-		// Add word "eeee" directly to the ,left of "con"
-		model.makeMove(Letter.getLetter(0), 5, 7);
-		model.makeMove(Letter.getLetter(1), 6, 7);
-		model.makeMove(Letter.getLetter(2), 7, 7);
-		model.makeMove(Letter.getLetter(3), 8, 7);
-		System.out.println(model.toString());
-		assertFalse(model.implementCurrentMove());
-
-	}
-	@Test
-	void testAddingValidWordBelow() {
-		ScrabbleModel model = new ScrabbleModel();
-
-		// Add the word "con"
-		model.makeMove(Letter.getLetter(77), 7, 7);
-		model.makeMove(Letter.getLetter(30), 8, 7);
-		model.makeMove(Letter.getLetter(38), 9, 7);
-
-		System.out.println(model.toString());
-
-		assertTrue(model.implementCurrentMove());
-
-		// Add the word one below
-		model.makeMove(Letter.getLetter(31), 9, 8);
-		model.makeMove(Letter.getLetter(39), 10, 8);
-		model.makeMove(Letter.getLetter(1), 11, 8);
-
-		System.out.println(model.toString());
-		assertTrue(model.implementCurrentMove());
-
-	}
-	@Test
-	void testAddingInvalidWordBelow() {
-		ScrabbleModel model = new ScrabbleModel();
-
-		// Add the word "con"
-		model.makeMove(Letter.getLetter(77), 7, 7);
-		model.makeMove(Letter.getLetter(30), 8, 7);
-		model.makeMove(Letter.getLetter(38), 9, 7);
-
-		System.out.println(model.toString());
-
-		assertTrue(model.implementCurrentMove());
-
-		// Add word "eeee" directly to the ,left of "con"
-		model.makeMove(Letter.getLetter(31), 7, 8);
-		model.makeMove(Letter.getLetter(39), 8, 8);
-		model.makeMove(Letter.getLetter(1), 9, 8);
-
-		System.out.println(model.toString());
-		assertFalse(model.implementCurrentMove());
-
-	}
-	
-	// Basic vertical test cases
-	@Test
-	void testAddingDriectlyBelow() {
-		ScrabbleModel model = new ScrabbleModel();
-
-		// Add the word "con"
-		model.makeMove(Letter.getLetter(77), 7, 7);
-		model.makeMove(Letter.getLetter(30), 7, 8);
-		model.makeMove(Letter.getLetter(38), 7, 9);
-
-		System.out.println(model.toString());
-
-		assertTrue(model.implementCurrentMove());
-
-		// Add word "test" directly to the write of "con"
-		model.makeMove(Letter.getLetter(50), 7, 10);
-		model.makeMove(Letter.getLetter(0), 7, 11);
-		model.makeMove(Letter.getLetter(60), 7, 12);
-		model.makeMove(Letter.getLetter(51), 7, 13);
-		System.out.println(model.toString());
-		assertTrue(model.implementCurrentMove());
-
-	}
-
-	@Test
-	void testAddingSingleLetterDirectlyBelow() {
-		ScrabbleModel model = new ScrabbleModel();
-
-		// Add the word "con"
-		model.makeMove(Letter.getLetter(77), 7, 7);
-		model.makeMove(Letter.getLetter(30), 7, 8);
-		model.makeMove(Letter.getLetter(38), 7, 9);
-
-		System.out.println(model.toString());
-
-		assertTrue(model.implementCurrentMove());
-
-		// Add letter "e" directly to the write of "con"
-		model.makeMove(Letter.getLetter(0), 7, 10);
-		System.out.println(model.toString());
-		assertTrue(model.implementCurrentMove());
-
-	}
-	
-	@Test
-	void testAddingSingleLetterDirectlyAbove() {
-		ScrabbleModel model = new ScrabbleModel();
-
-		// Add the word "con"
-		model.makeMove(Letter.getLetter(77), 7, 7);
-		model.makeMove(Letter.getLetter(30), 7, 8);
-		model.makeMove(Letter.getLetter(38), 7, 9);
-
-		System.out.println(model.toString());
-
-		assertTrue(model.implementCurrentMove());
-
-		// Add letter "e" directly to the bottom of "con"
-		model.makeMove(Letter.getLetter(0), 7, 10);
-		System.out.println(model.toString());
-		assertTrue(model.implementCurrentMove());
-
-		// Add letter "s" directly to the top of "cone"
-		model.makeMove(Letter.getLetter(60), 7, 6);
-		System.out.println(model.toString());
-		assertTrue(model.implementCurrentMove());
-	}
-	
-	@Test
-	void testAddingInvalidSingleLetterDirectlyToBelow() {
-		ScrabbleModel model = new ScrabbleModel();
-
-		// Add the word "con"
-		model.makeMove(Letter.getLetter(77), 7, 7);
-		model.makeMove(Letter.getLetter(30), 7, 8);
-		model.makeMove(Letter.getLetter(38), 7, 9);
-
-		System.out.println(model.toString());
-
-		assertTrue(model.implementCurrentMove());
-
-		// Add letter "z" directly below "con"
-		model.makeMove(Letter.getLetter(96), 7, 10);
-		System.out.println(model.toString());
-		assertFalse(model.implementCurrentMove());
-
-	}
-	
-	@Test
-	void testAddingInvalidSingleLetterDirectlyAbove() {
-		ScrabbleModel model = new ScrabbleModel();
-
-		// Add the word "con"
-		model.makeMove(Letter.getLetter(77), 7, 7);
-		model.makeMove(Letter.getLetter(30), 7, 8);
-		model.makeMove(Letter.getLetter(38), 7, 9);
-
-		System.out.println(model.toString());
-
-		assertTrue(model.implementCurrentMove());
-
-		// Add letter "e" directly to the bottom of "con"
-		model.makeMove(Letter.getLetter(0), 7, 10);
-		System.out.println(model.toString());
-		assertTrue(model.implementCurrentMove());
-
-		// Add letter "s" directly to the top of "cone"
-		model.makeMove(Letter.getLetter(96), 7, 6);
-		System.out.println(model.toString());
-		assertFalse(model.implementCurrentMove());
-	}
-
-	@Test
-	void testAddingSingleLetterDirectlyToLeftVerticalCase() {
-		ScrabbleModel model = new ScrabbleModel();
-
-		// Add the word "con"
-		model.makeMove(Letter.getLetter(77), 7, 7);
-		model.makeMove(Letter.getLetter(30), 7, 8);
-		model.makeMove(Letter.getLetter(38), 7, 9);
-
-		System.out.println(model.toString());
-
-		assertTrue(model.implementCurrentMove());
-		// Add letter "n" directly to the left of o in "con"
-		model.makeMove(Letter.getLetter(39), 6, 8);
-		System.out.println(model.toString());
-		assertTrue(model.implementCurrentMove());
-
-	}
-
-	@Test
-	void testAddingInvalidWordToRight() {
-		ScrabbleModel model = new ScrabbleModel();
-
-		// Add the word "con"
-		model.makeMove(Letter.getLetter(77), 7, 7);
-		model.makeMove(Letter.getLetter(30), 7, 8);
-		model.makeMove(Letter.getLetter(38), 7, 9);
-
-		System.out.println(model.toString());
-
-		assertTrue(model.implementCurrentMove());
-
-		// Add word "eeee" directly to the ,left of "con"
-		model.makeMove(Letter.getLetter(31), 8, 7);
-		model.makeMove(Letter.getLetter(39), 8, 8);
-		model.makeMove(Letter.getLetter(1), 8, 9);
-
-		System.out.println(model.toString());
-		assertFalse(model.implementCurrentMove());
-
-	}
-	
-	@Test
-	void testAddingInvalidWordToLeft() {
-		ScrabbleModel model = new ScrabbleModel();
-
-		// Add the word "con"
-		model.makeMove(Letter.getLetter(77), 7, 7);
-		model.makeMove(Letter.getLetter(30), 7, 8);
-		model.makeMove(Letter.getLetter(38), 7, 9);
-
-		System.out.println(model.toString());
-
-		assertTrue(model.implementCurrentMove());
-
-		// Add word "eeee" directly to the ,left of "con"
-		model.makeMove(Letter.getLetter(31), 6, 7);
-		model.makeMove(Letter.getLetter(39), 6, 8);
-		model.makeMove(Letter.getLetter(1), 6, 9);
-
-		System.out.println(model.toString());
-		assertFalse(model.implementCurrentMove());
-
-	}
-	
-	@Test
-	void testWordAllTheWayDown() {
-		ScrabbleModel model = new ScrabbleModel();
+	public void testWordAllTheWayDown() {
 
 		// Add the word "counterbalanced"
 		model.makeMove(Letter.getLetter(77), 7, 0);
@@ -425,15 +36,12 @@ class TestScrabbleModel {
 		model.makeMove(Letter.getLetter(1), 7, 13);
 		model.makeMove(Letter.getLetter(68), 7, 14);
 
-		System.out.println(model.toString());
-
 		assertTrue(model.implementCurrentMove());
 
 	}
-	
+
 	@Test
-	void testWordAllTheWayDownInPartsStartTop() {
-		ScrabbleModel model = new ScrabbleModel();
+	public void testWordAllTheWayDownInPartsStartTop() {
 
 		// Add the word "counterbalanced"
 		model.makeMove(Letter.getLetter(77), 7, 0);
@@ -452,16 +60,12 @@ class TestScrabbleModel {
 		model.makeMove(Letter.getLetter(1), 7, 13);
 		model.makeMove(Letter.getLetter(68), 7, 14);
 
-		System.out.println(model.toString());
-
 		assertTrue(model.implementCurrentMove());
 
-
 	}
-	
+
 	@Test
-	void testWordAllTheWayDownInPartsStartBottom() {
-		ScrabbleModel model = new ScrabbleModel();
+	public void testWordAllTheWayDownInPartsStartBottom() {
 
 		// Add the word "counterbalanced"
 
@@ -474,10 +78,8 @@ class TestScrabbleModel {
 		model.makeMove(Letter.getLetter(1), 7, 13);
 		model.makeMove(Letter.getLetter(68), 7, 14);
 
-		System.out.println(model.toString());
-
 		assertTrue(model.implementCurrentMove());
-		
+
 		model.makeMove(Letter.getLetter(77), 7, 0);
 		model.makeMove(Letter.getLetter(30), 7, 1);
 		model.makeMove(Letter.getLetter(64), 7, 2);
@@ -485,17 +87,13 @@ class TestScrabbleModel {
 		model.makeMove(Letter.getLetter(50), 7, 4);
 		model.makeMove(Letter.getLetter(0), 7, 5);
 		model.makeMove(Letter.getLetter(44), 7, 6);
-		System.out.println(model.toString());
 
 		assertTrue(model.implementCurrentMove());
 
-
-
 	}
-	
+
 	@Test
-	void testWordAllTheWayAcross() {
-		ScrabbleModel model = new ScrabbleModel();
+	public void testWordAllTheWayAcross() {
 
 		// Add the word "counterbalanced"
 		model.makeMove(Letter.getLetter(77), 0, 7);
@@ -514,15 +112,12 @@ class TestScrabbleModel {
 		model.makeMove(Letter.getLetter(1), 13, 7);
 		model.makeMove(Letter.getLetter(68), 14, 7);
 
-		System.out.println(model.toString());
-
 		assertTrue(model.implementCurrentMove());
 
 	}
-	
+
 	@Test
-	void testWordAllTheWayAcrossInPartsStartLeft() {
-		ScrabbleModel model = new ScrabbleModel();
+	public void testWordAllTheWayAcrossInPartsStartLeft() {
 
 		// Add the word "counterbalanced"
 		model.makeMove(Letter.getLetter(77), 0, 7);
@@ -541,20 +136,15 @@ class TestScrabbleModel {
 		model.makeMove(Letter.getLetter(1), 13, 7);
 		model.makeMove(Letter.getLetter(68), 14, 7);
 
-
-		System.out.println(model.toString());
-
 		assertTrue(model.implementCurrentMove());
 
 	}
-	
+
 	@Test
-	void testWordAllTheWayAcrossInPartsStartRight() {
-		ScrabbleModel model = new ScrabbleModel();
+	public void testWordAllTheWayAcrossInPartsStartRight() {
 
 		// Add the word "counterbalanced"
-		
-		
+
 		model.makeMove(Letter.getLetter(75), 7, 7);
 		model.makeMove(Letter.getLetter(12), 8, 7);
 		model.makeMove(Letter.getLetter(56), 9, 7);
@@ -563,10 +153,9 @@ class TestScrabbleModel {
 		model.makeMove(Letter.getLetter(78), 12, 7);
 		model.makeMove(Letter.getLetter(1), 13, 7);
 		model.makeMove(Letter.getLetter(68), 14, 7);
-		System.out.println(model.toString());
 
 		assertTrue(model.implementCurrentMove());
-		
+
 		model.makeMove(Letter.getLetter(77), 0, 7);
 		model.makeMove(Letter.getLetter(30), 1, 7);
 		model.makeMove(Letter.getLetter(64), 2, 7);
@@ -575,27 +164,17 @@ class TestScrabbleModel {
 		model.makeMove(Letter.getLetter(0), 5, 7);
 		model.makeMove(Letter.getLetter(44), 6, 7);
 
-		System.out.println(model.toString());
-
 		assertTrue(model.implementCurrentMove());
-		System.out.println(model.toString());
-
-
-
 
 	}
-	
-	
+
 	@Test
-	void testAddingInWrongOrder() {
-		ScrabbleModel model = new ScrabbleModel();
+	public void testAddingInWrongOrder() {
 
 		// Add the word "con"
 		model.makeMove(Letter.getLetter(38), 9, 7);
 		model.makeMove(Letter.getLetter(30), 8, 7);
 		model.makeMove(Letter.getLetter(77), 7, 7);
-
-		System.out.println(model.toString());
 
 		assertTrue(model.implementCurrentMove());
 		// Add word "test" directly to the write of "con"
@@ -603,65 +182,66 @@ class TestScrabbleModel {
 		model.makeMove(Letter.getLetter(0), 11, 7);
 		model.makeMove(Letter.getLetter(60), 12, 7);
 		model.makeMove(Letter.getLetter(51), 13, 7);
-		System.out.println(model.toString());
+
 		assertTrue(model.implementCurrentMove());
 
 	}
-	
-	
 
 	@Test
-	void testGetCurrHand() {
-		ScrabbleModel model = new ScrabbleModel();
+	public void testGetCurrHand() {
+		assertEquals(model.getCurrHand().size(), 7);
 
-		
 	}
 	
 	@Test
-	void testDiscardLetter() {
+	public void testAddNotInCenter() {
+		model.makeMove(Letter.getLetter(0), 0, 0);
+		assertFalse(model.implementCurrentMove());
+	}
+	
+	@Test
+	public void adjacencyTest1() {
 		
-		ScrabbleModel model = new ScrabbleModel();
-		List<Letter> hand1 =  model.getCurrHand();
+	}
+
+	@Test
+	public void testDiscardLetter() {
+
+		List<Letter> hand1 = model.getCurrHand();
 		ArrayList<Letter> toDiscard = new ArrayList<>(hand1);
 		System.out.println(hand1.toString());
 		model.discardLetters(toDiscard);
-		List<Letter> hand2 =  model.getCurrHand();
+		List<Letter> hand2 = model.getCurrHand();
 		System.out.println(hand2.toString());
-		for (int i = 0; i < hand1.size(); i ++) {
+		for (int i = 0; i < hand1.size(); i++) {
 			System.out.print(hand1.get(i));
 			System.out.print(hand2.get(i));
 		}
 
-
-		
 	}
-	
+
 	@Test
-	void testDrawLetters() {
-		ScrabbleModel model = new ScrabbleModel();
-		List<Letter> original =  model.getCurrHand();
+	public void testDrawLetters() {
+
+		List<Letter> original = model.getCurrHand();
 		List<Letter> hand1 = List.copyOf(original);
 		model.tilesLeft();
 		ArrayList<Letter> toDiscard = new ArrayList<>(hand1);
 		model.discardLetters(toDiscard);
-		List<Letter> hand2 =  model.getCurrHand();
+		List<Letter> hand2 = model.getCurrHand();
 		System.out.println(hand1.toString());
 		System.out.println(hand2.toString());
-		for (int i = 0; i < hand1.size(); i ++) {
+		for (int i = 0; i < hand1.size(); i++) {
 			System.out.print(hand1.get(i));
 			System.out.print(hand2.get(i));
-			assertFalse(hand1.get(i) == hand2.get(i));
+			assertNotEquals(hand1.get(i), hand2.get(i));
 		}
 
-
-		
 	}
-
-//	@Test
-//	void testDictionaryInModel() {
-//		ScrabbleModel model = new ScrabbleModel();
-//		assertTrue(model.testDictionary("con"));
-
-	//}
-
+	
+	@Test
+	public void testGetCurrName() {
+		assertEquals("Player One", model.getCurrPlayerName());
+	}
+	
 }
