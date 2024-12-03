@@ -68,7 +68,7 @@ public class Move {
 			return m1.getX() - m2.getX();	
 		}
 	}
-	
+		
 	@Override
 	public boolean equals(Object other) {
 		if (other == null) {
