@@ -108,10 +108,6 @@ public class TestController {
         assertFalse(board.isEmpty());
     }
     
-    @Test
-	public void testAddObserver() {
-		// Not sure how to test this
-	}
     
     @Test
 	public void testIsGameOver() {
