@@ -255,6 +255,16 @@ class TestScrabbleModel {
 		assertTrue(model.implementCurrentMove());
 		model.changeTurns();
 		assertTrue(model.getCurrPlayerName().compareTo("Jay") == 0);	
+		assertFalse(model.isGameOver());
+	}
+	
+	@Test
+	public void testForceEnd() {
+		ScrabbleModel model = new ScrabbleModel("Steven", "Jay");
+		model.makeMove(Letter.getLetter(77), 7, 7);
+		model.makeMove(Letter.getLetter(30), 8, 7);
+		model.makeMove(Letter.getLetter(38), 9, 7);
+		model.forceEnd();
 	}
 	
 }
