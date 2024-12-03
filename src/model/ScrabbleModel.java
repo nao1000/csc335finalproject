@@ -124,7 +124,7 @@ public class ScrabbleModel {
 		}
 	}
 
-	public void initializeHands() {
+	private void initializeHands() {
 		/**
 		 * This private helper for the constructor sets up each players' starting hands.
 		 * In Scrabble, each player starts with 7 random tiles
@@ -196,7 +196,7 @@ public class ScrabbleModel {
 		currMoves.add(new Move(l, x, y));
 	}
 
-	public void doMoves() {
+	private void doMoves() {
 		/**
 		 * This method acts on the attempted moves, physically placing them on the game
 		 * board. This is done separately so the model can verifying the positioning of
@@ -268,7 +268,7 @@ public class ScrabbleModel {
 				valid = false;
 			}
 			else if (mainWordT1.size() > 1){
-				localScore += calculateScoreB(this.checkVertical(x, y, 2));
+				localScore += calculateScore(this.checkVertical(x, y, 2));
 			}
 
 			// check horizontal
@@ -276,7 +276,7 @@ public class ScrabbleModel {
 				valid = false;
 			}
 			else if (mainWordT2.size() > 1){
-				localScore += calculateScoreB(this.checkHorizontal(x, y, 2));
+				localScore += calculateScore(this.checkHorizontal(x, y, 2));
 			}
 			
 			if (localScore == 0) {
@@ -314,7 +314,7 @@ public class ScrabbleModel {
 			if (mainWord != null && (mainWord.containsAll(currMoves))) {
 
 				// add main words score
-				localScore += calculateScoreB(mainWord);
+				localScore += calculateScore(mainWord);
 
 				// look at all of the indirect words that may have been made
 				for (Move m : currMoves) {
@@ -327,7 +327,7 @@ public class ScrabbleModel {
 					if (secondaryWord.size() > 1) {
 						for (Move m2 : currMoves) {
 							if (secondaryWord.contains(m2)) {						
-								localScore += calculateScoreB(secondaryWord);
+								localScore += calculateScore(secondaryWord);
 								break;
 							}
 						}
@@ -377,12 +377,12 @@ public class ScrabbleModel {
 		return false;
 	}
 
-	public void winningMessage() {
+	private void winningMessage() {
 		String winning = "GAME OVER: " + currPlayer.getName() + " has WON!";
 		notifyObserver(winning, "currPlay");
 	}
 	
-	public int calculateScoreB(ArrayList<Move> arr) {
+	private int calculateScore(ArrayList<Move> arr) {
 		/**
 		 * This method calculates the score for a given word.
 		 * 
@@ -418,7 +418,7 @@ public class ScrabbleModel {
 		return multi;
 	}
 
-	public boolean adjacentCheck() {
+	private boolean adjacentCheck() {
 		/**
 		 * This method validates the placement of tiles before they are actually placed.
 		 * To start a game in Scrabble, the first word must use the center tile. All
