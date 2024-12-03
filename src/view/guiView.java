@@ -259,15 +259,15 @@ public class guiView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 boolean response = ctrl.submitMove();
                 if (response) {
-                	mainPanel.remove(handPanel);
-                	LetterTransferHandler.clearPlacedList();
-                	currHand();
-                	addButtons();
                 	if (ctrl.isGameOver()) {
                 		restartGame();
                 	}
                 	else {
                 		ctrl.swapTurns();
+                		mainPanel.remove(handPanel);
+                    	LetterTransferHandler.clearPlacedList();
+                    	currHand();
+                    	addButtons();
                 	}
                 } 
                 else {
