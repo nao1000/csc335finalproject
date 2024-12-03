@@ -130,6 +130,10 @@ public class ScrabbleController {
 		model.playAgain();
 	}
 	
+	public boolean isGameOver() {
+		return model.isGameOver();
+	}
+	
 	public void delObservers() {
 		model.deleteObservers();
 	}

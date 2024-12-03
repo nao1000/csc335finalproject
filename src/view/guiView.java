@@ -237,7 +237,13 @@ public class guiView extends JFrame {
                 	mainPanel.remove(handPanel);
                 	LetterTransferHandler.clearPlacedList();
                 	currHand();
-                	addButtons();	
+                	addButtons();
+                	if (ctrl.isGameOver()) {
+                		restartGame();
+                	}
+                	else {
+                		ctrl.swapTurns();
+                	}
                 } 
                 else {
                 	LetterTransferHandler.clearTileLabels();
@@ -302,29 +308,8 @@ public class guiView extends JFrame {
     	quitButton.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			ctrl.quitGame();
-    			int response = JOptionPane.showConfirmDialog(
-    				    mainPanel, 
-    				    "Do you want to play again?", 
-    				    "Play Again", 
-    				    JOptionPane.YES_NO_OPTION
-    				);
-
-    				if (response == JOptionPane.YES_OPTION) {
-    				    // Handle playing again
-    				    ctrl.startOver();
-    				    mainPanel.remove(handPanel);
-    				    mainPanel.remove(wrapperPanel);
-    				    ctrl.delObservers();
-    				    makeBoard();
-    				    currHand();
-	    				addButtons();
-	    				revalidate();
-    				} else if (response == JOptionPane.NO_OPTION) {
-    				    // Handle not playing again
-    				    System.exit(0);
-    				}
-
-    		}
+    			restartGame();
+    		}	
     	});
     	handPanel.add(submitButton);
     	handPanel.add(discardButton);
@@ -334,6 +319,29 @@ public class guiView extends JFrame {
  
     }
 
+    private void restartGame() {
+    	int response = JOptionPane.showConfirmDialog(
+			    mainPanel, 
+			    "Do you want to play again?", 
+			    "Play Again", 
+			    JOptionPane.YES_NO_OPTION
+			);
+
+			if (response == JOptionPane.YES_OPTION) {
+			    // Handle playing again
+			    ctrl.startOver();
+			    mainPanel.remove(handPanel);
+			    mainPanel.remove(wrapperPanel);
+			    ctrl.delObservers();
+			    makeBoard();
+			    currHand();
+				addButtons();
+				revalidate();
+			} else if (response == JOptionPane.NO_OPTION) {
+			    // Handle not playing again
+			    System.exit(0);
+			}
+    }
 
     public static void main(String args[]) {
         guiView view = new guiView();
