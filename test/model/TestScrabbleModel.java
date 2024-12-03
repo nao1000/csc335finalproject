@@ -163,6 +163,8 @@ class TestScrabbleModel {
 		model.makeMove(Letter.getLetter(50), 4, 7);
 		model.makeMove(Letter.getLetter(0), 5, 7);
 		model.makeMove(Letter.getLetter(44), 6, 7);
+		
+		System.out.println(model.toString());
 
 		assertTrue(model.implementCurrentMove());
 
