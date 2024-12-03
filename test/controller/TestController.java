@@ -84,7 +84,7 @@ public class TestController {
     @Test
     public void testStartOver() {
         ctrl.startOver();
-        assertEquals(84, ctrl.tilesLeft()); // Assuming a full set of tiles is 100
+        assertEquals(84, ctrl.tilesLeft());
     }
 
 
