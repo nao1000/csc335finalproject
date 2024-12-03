@@ -3,3 +3,6 @@
 /TestScrabbleModel.class
 /TestScrabbleModelScoring.class
 /TestTrie.class
+/AllTests.class
+/TestScrabbleModelConHorizontal.class
+/TestScrabbleModelConVertical.class
