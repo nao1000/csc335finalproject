@@ -267,7 +267,7 @@ public class ScrabbleModel {
 			if ((mainWordT1 = checkVertical(x, y, 2)) == null) {
 				valid = false;
 			}
-			else if (mainWordT2.size() > 1){
+			else if (mainWordT1.size() > 1){
 				localScore += calculateScoreB(this.checkVertical(x, y, 2));
 			}
 
@@ -296,7 +296,6 @@ public class ScrabbleModel {
 				notifyObserver(currPlayer.getName() + " played the word " + makeStr(mainWord) + " for " 
 							+ String.valueOf(localScore) + " points!", "currPlay");
 				drawLetters();
-				changeTurns();
 				return true;
 			}
 
@@ -341,7 +340,7 @@ public class ScrabbleModel {
 		if (!valid) {
 			undoMoves();
 			notifyObserver(currPlayer.getName() + " played an invalid word " 
-					+ makeStr(mainWord) + "... Try again", "currPlay");
+				 + "... Try again", "currPlay");
 			return false;
 		}
 
@@ -359,7 +358,6 @@ public class ScrabbleModel {
 		notifyObserver(currPlayer.getName() + " played the word " + makeStr(mainWord) + " for " 
 					+ String.valueOf(localScore) + " points!", "currPlay");
 		drawLetters();
-		changeTurns();
 		return true;
 	}
 	
