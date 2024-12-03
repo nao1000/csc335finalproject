@@ -18,6 +18,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 import javax.swing.*;
@@ -26,7 +27,7 @@ import aggregates.Letter;
 import controller.ScrabbleController;
 import javax.swing.BorderFactory;
 
-
+import java.util.random.*;
 
 public class guiView extends JFrame {
 
@@ -39,6 +40,7 @@ public class guiView extends JFrame {
 
     private JPanel cards = new JPanel(new CardLayout());
     private CardLayout cl = (CardLayout) (cards.getLayout());
+    private Random rand = new Random();
     
     ArrayList<Letter> discardList = new ArrayList<Letter>();
     ArrayList<TileLabel> placedList = new ArrayList<TileLabel>();
@@ -50,6 +52,11 @@ public class guiView extends JFrame {
     JPanel handPanel;
     JLabel score;
     JLabel left;
+    JButton submitButton;
+    JButton discardButton;
+    JButton clearButton;
+    JButton quitButton;
+    JButton skipButton;
 
     public guiView() {
         setUp();
@@ -97,7 +104,7 @@ public class guiView extends JFrame {
         startPanel.add(startButton, gbc);
 
         gbc.gridy++;
-        JLabel player1 = new JLabel("Enter Player One Name");
+        JLabel player1 = new JLabel("Enter Player Name");
         startPanel.add(player1, gbc);
 
         gbc.gridx++;
@@ -107,7 +114,7 @@ public class guiView extends JFrame {
 
         gbc.gridy++;
         gbc.gridx = 0;
-        JLabel player2 = new JLabel("Enter Player Two Name");
+        JLabel player2 = new JLabel("Enter Player Name");
         startPanel.add(player2, gbc);
 
         gbc.gridx++;
@@ -121,7 +128,9 @@ public class guiView extends JFrame {
                 if (player1Name.getText().isEmpty() && player2Name.getText().isEmpty()) {
                     ctrl = new ScrabbleController();
                 } else {
-                    ctrl = new ScrabbleController(player1Name.getText(), player2Name.getText());
+                	String name1 = rand.nextBoolean() ? player1Name.getText() : player2Name.getText();
+                	String name2 = name1.equals(player1Name.getText()) ? player2Name.getText() : player1Name.getText();
+                    ctrl = new ScrabbleController(name1,name2);
                 }
                 makeBoard();
                 currHand();
@@ -226,8 +235,24 @@ public class guiView extends JFrame {
     	
     	gbc.gridy = 0;
     	gbc.gridx = 0;
+    	makeSubmitButton();
+    	makeDiscardButton();
+    	makeClearButton();
+    	makeQuitButton();
+    	makeSkipButton();
     	
-    	JButton submitButton = new JButton("Submit");
+   
+    	handPanel.add(submitButton);
+    	handPanel.add(discardButton);
+    	handPanel.add(skipButton);
+    	handPanel.add(clearButton);
+    	handPanel.add(quitButton);
+    	revalidate();
+ 
+    }
+
+    private void makeSubmitButton() {
+    	submitButton = new JButton("Submit");
     	submitButton.setSize(new Dimension(50,50));
     	submitButton.addActionListener(new ActionListener() {
             @Override
@@ -251,8 +276,10 @@ public class guiView extends JFrame {
                 }
             }
         });
-    	
-    	JButton discardButton = new JButton("Discard");
+    }
+    
+    private void makeDiscardButton() {
+    	discardButton = new JButton("Discard");
     	discardButton.setSize(new Dimension(50,50));
     	if (ctrl.tilesLeft() < 7) {
     		discardButton.setBackground(Color.RED);
@@ -294,7 +321,10 @@ public class guiView extends JFrame {
 	    		
 	    	});
     	}
-    	JButton clearButton = new JButton("Clear");
+    }
+    
+    private void makeClearButton() {
+    	clearButton = new JButton("Clear");
     	clearButton.setSize(new Dimension(50,50));
     	clearButton.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
@@ -302,8 +332,10 @@ public class guiView extends JFrame {
     			LetterTransferHandler.clearTileLabels();
     		}
     	});
-    	
-    	JButton quitButton = new JButton("Quit");
+    }
+    
+    private void makeQuitButton() {
+    	quitButton = new JButton("Quit");
     	quitButton.setSize(new Dimension(50,50));
     	quitButton.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
@@ -311,14 +343,22 @@ public class guiView extends JFrame {
     			restartGame();
     		}	
     	});
-    	handPanel.add(submitButton);
-    	handPanel.add(discardButton);
-    	handPanel.add(clearButton);
-    	handPanel.add(quitButton);
-    	revalidate();
- 
     }
-
+    
+    private void makeSkipButton() {
+    	skipButton = new JButton("Skip Turn");
+    	skipButton.setSize(new Dimension(50,50));
+    	skipButton.addActionListener(new ActionListener(){
+    		public void actionPerformed(ActionEvent e) {
+    			ctrl.swapTurns();
+    			mainPanel.remove(handPanel);
+            	LetterTransferHandler.clearPlacedList();
+            	currHand();
+            	addButtons();
+    		}
+    	});
+    }
+    
     private void restartGame() {
     	int response = JOptionPane.showConfirmDialog(
 			    mainPanel, 
