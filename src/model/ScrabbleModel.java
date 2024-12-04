@@ -268,6 +268,7 @@ public class ScrabbleModel {
 
 		// make sure letters touch existing letters or starts at (7,7)
 		if (!adjacentCheck()) {
+			notifyObserver(currPlayer.getName() + " had an invalid placement " + "... Try again", "currPlay");
 			this.clearMoves();
 			return false;
 		}
