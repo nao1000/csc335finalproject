@@ -1,30 +1,41 @@
-package aggregates;
-import static org.junit.Assert.assertTrue;
+/*
+ * Nathan, Jay, Kory, Steven
+ * 
+ * File: LetterTest.java
+ * 
+ * Description: JUnit for specifically Letter.java
+ */
 
-import java.io.FileNotFoundException;
+package aggregates;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import org.junit.jupiter.api.Test;
 
-import aggregates.Letter;
-import model.ScrabbleModel;
-
 public class LetterTest {
 
-//	@Test
-//	public void getLettersTest() {
-//		for (int i = 0; i < 98; i++) {
-//			System.out.println(Letter.getLetter(i));
-//			
-//		}
-//		
-	//}
-	
 	@Test
-	public void makeBoard() throws FileNotFoundException {
-		ScrabbleModel model = new ScrabbleModel();
-		assertTrue(model.placeLetter(Letter.getLetter(0), 0, 0));
-		System.out.println(model.toString());
-		
+	public void testGetChar() {
+		assertEquals(Letter.getLetter(0).getChar(), "E");
+		assertEquals(Letter.getLetter(97).getChar(), "X");
 	}
-	
+
+	@Test
+	public void testGetPoints() {
+		assertEquals(Letter.getLetter(0).getPoints(), 1);
+		assertEquals(Letter.getLetter(97).getPoints(), 8);
+	}
+
+	@Test
+	public void testToString() {
+		assertEquals("E : 1", Letter.getLetter(0).toString());
+	}
+
+	@Test
+	public void testUniqueObjects() {
+		assertEquals(Letter.getLetter(0).getChar(), Letter.getLetter(1).getChar());
+		assertNotEquals(Letter.getLetter(0), Letter.getLetter(1));
+	}
+
 }
