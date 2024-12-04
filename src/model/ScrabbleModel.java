@@ -452,9 +452,6 @@ public class ScrabbleModel {
 			int y = m.getY();
 			Tile tile = board[y][x];
 			Letter l = tile.getOccupyingLetter();
-			if (!l.equals(m.getLetter())) {
-				System.out.println("ERROR: The letters inside calculateScoreB are not aliging");
-			}
 			score += l.getPoints() * tile.getMulti();
 
 		}
