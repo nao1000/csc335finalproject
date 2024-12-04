@@ -1,3 +1,11 @@
+/*
+ * Nathan, Jay, Kory, Steven
+ * 
+ * File: LetterBagTest.java
+ * 
+ * Description: JUnit for specifically LetterBag.java
+ */
+
 package aggregates;
 
 import static org.junit.Assert.assertEquals;
@@ -6,20 +14,19 @@ import org.junit.jupiter.api.Test;
 
 public class LetterBagTest {
 
-	
 	LetterBag lb = new LetterBag();
-	
+
 	@Test
 	public void testEmpty() {
 		assertEquals(lb.size(), 0);
 	}
-	
+
 	@Test
 	public void testFill() {
 		lb.fillBag();
 		assertEquals(lb.size(), 98);
 	}
-	
+
 	@Test
 	public void testDraw() {
 		lb.fillBag();
@@ -27,7 +34,7 @@ public class LetterBagTest {
 			assertEquals(Letter.getLetter(i), lb.draw(0));
 		}
 	}
-	
+
 	@Test
 	public void testAddTo() {
 		lb.addTo(Letter.getLetter(0));
