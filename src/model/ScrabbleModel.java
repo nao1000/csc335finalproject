@@ -14,7 +14,6 @@ package model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -22,9 +21,10 @@ import java.util.Scanner;
 import aggregates.Letter;
 import aggregates.LetterBag;
 import aggregates.Move;
-import aggregates.Observer;
 import aggregates.Player;
 import aggregates.Tile;
+import view.InfoLabel;
+import aggregates.DictionaryTrie;
 
 public class ScrabbleModel {
 
@@ -32,15 +32,15 @@ public class ScrabbleModel {
 	private LetterBag letterBag = new LetterBag();
 	private DictionaryTrie dictionary = new DictionaryTrie();
 	private ArrayList<Move> currMoves = new ArrayList<Move>();
+	private ArrayList<Letter> usedLetters = new ArrayList<Letter>();
 	private Player player1, player2;
 	private Player currPlayer;
 	private Random rand = new Random();
 
-	private List<Observer> aObservers = new ArrayList<>();
-	private List<Observer> letterObservers = new ArrayList<>();
-	
-	
-	
+	// is not actually following the Observer design pattern.
+	// It is inspired by it though
+	private List<InfoLabel> aObservers = new ArrayList<>();
+
 	// Two Constructors Made
 	// Default Player names + original tests didn't take in the names
 	public ScrabbleModel() {
@@ -61,24 +61,38 @@ public class ScrabbleModel {
 		initializeHands();
 		currPlayer = player1;
 	}
-	
-	public void addObserver(Observer o) {
-		aObservers.add(o);
+
+	public void addObserver(InfoLabel il) {
+		/**
+		 * This method stores InfoLabels in the model so it can update game info for the
+		 * user to see
+		 * 
+		 * @param (InfoLabel) il : a specialized JLabel for game info
+		 */
+		aObservers.add(il);
 	}
-	
+
 	private void notifyObserver(String updateTo, String name) {
-		for (Observer o : aObservers) {
-			if (o.getName().equals(name)) {
-				o.updateInfo(updateTo);
+		/**
+		 * This method is a play on the actual design pattern. There are not separate
+		 * observers to worry about but simply InfoLabels. These labels have a unique
+		 * "name" so it update the correct one with the correct information.
+		 */
+		for (InfoLabel il : aObservers) {
+			if (il.getName().equals(name)) {
+				il.updateInfo(updateTo);
 				break;
 			}
 		}
 	}
-	
+
 	public void deleteObservers() {
+		/**
+		 * This method removes the InfoLabels from the model
+		 */
 		aObservers.clear();
 	}
-	
+
 	private void initializeBoard() {
 		/**
 		 * This private helper for the constructor creates the 15x15 board the game will
@@ -147,10 +161,16 @@ public class ScrabbleModel {
 		 * @pre discardLetters != null
 		 */
 		if (letterBag.size() >= 7) {
+
+			// remove the letter objects from the hand
 			currPlayer.discardLetter(discardLetters);
+
+			// randomly select new tiles for the player
 			for (int i = 0; i < discardLetters.size(); i++) {
 				currPlayer.addLetter(letterBag.draw(rand.nextInt(letterBag.size())));
 			}
+
+			// add discarded tiles back
 			for (Letter l : discardLetters) {
 				letterBag.addTo(l);
 			}
@@ -165,11 +185,15 @@ public class ScrabbleModel {
 		 * receives the necessary amount of letters back. The removed letters are NOT
 		 * added back to the bag.
 		 */
+
+		// remove the played letters from a player's hand
 		ArrayList<Letter> arr = new ArrayList<Letter>();
 		for (Move m : currMoves) {
 			arr.add(m.getLetter());
 		}
 		currPlayer.discardLetter(arr);
+		// draw necessary amount of letters to replenish or
+		// the amount left if that number is less
 		int drawAmount = arr.size();
 		if (arr.size() > letterBag.size()) {
 			drawAmount = letterBag.size();
@@ -177,6 +201,8 @@ public class ScrabbleModel {
 		for (int i = 0; i < drawAmount; i++) {
 			currPlayer.addLetter(letterBag.draw(rand.nextInt(letterBag.size())));
 		}
+
+		// update tile count game info
 		notifyObserver("Tiles Remaining: " + String.valueOf(letterBag.size()), "left");
 		clearMoves();
 	}
@@ -202,6 +228,7 @@ public class ScrabbleModel {
 		 * the letters is valid.
 		 */
 		for (Move m : currMoves) {
+			usedLetters.add(m.getLetter());
 			board[m.getY()][m.getX()].placeLetterTile(m.getLetter());
 		}
 	}
@@ -214,7 +241,7 @@ public class ScrabbleModel {
 		 * the current moves list at the end
 		 */
 		for (Move m : currMoves) {
-			m.undoUse();
+			usedLetters.remove(m.getLetter());
 			board[m.getY()][m.getX()].removeLetterTile();
 		}
 		currMoves.clear();
@@ -261,12 +288,14 @@ public class ScrabbleModel {
 
 		// If the move is a single letter
 		if (currMoves.size() == 1) {
-			
+
 			// check vertical
 			if ((mainWordT1 = checkVertical(x, y, 2)) == null) {
 				valid = false;
 			}
-			else if (mainWordT1.size() > 1){
+
+			// if the array is only 1, it means there wasn't an actual vertical word made
+			else if (mainWordT1.size() > 1) {
 				localScore += calculateScore(this.checkVertical(x, y, 2));
 			}
 
@@ -274,32 +303,35 @@ public class ScrabbleModel {
 			if ((mainWordT2 = checkHorizontal(x, y, 2)) == null) {
 				valid = false;
 			}
-			else if (mainWordT2.size() > 1){
+
+			// same with horizontal
+			else if (mainWordT2.size() > 1) {
 				localScore += calculateScore(this.checkHorizontal(x, y, 2));
 			}
-			
 			if (localScore == 0) {
 				valid = false;
-				
 			}
-			
 			// make sure to multiply if necessary
 			if (valid) {
+
+				// use the multiplier if necessary
 				localScore *= board[currMoves.get(0).getY()][currMoves.get(0).getY()].getWordMulti();
 				// mark it as used
 				board[currMoves.get(0).getY()][currMoves.get(0).getY()].usedWordMulti();
 				currPlayer.addScore(localScore);
+
+				// update score info
 				notifyObserver(scoreBoard(), "score");
-				
+
+				// update played word info
 				mainWord = mainWordT1.size() > mainWordT2.size() ? mainWordT1 : mainWordT2;
-				notifyObserver(currPlayer.getName() + " played the word " + makeStr(mainWord) + " for " 
-							+ String.valueOf(localScore) + " points!", "currPlay");
+				notifyObserver(currPlayer.getName() + " played the word " + makeStr(mainWord) + " for "
+						+ String.valueOf(localScore) + " points!", "currPlay");
 				drawLetters();
 				return true;
 			}
 
 		} else {
-
 			// determine if the word is horizontal or not
 			boolean isHorizontal = moveStart.getY() == moveEnd.getY();
 
@@ -307,9 +339,8 @@ public class ScrabbleModel {
 			mainWord = isHorizontal ? this.checkHorizontal(x, y, 1) : this.checkVertical(x, y, 1);
 
 			// if main word is valid, check everything else relevant
-			// this means for a horizontal word, check new vertical words that may have been
-			// made
-			// and vice versa
+			// this means for a horizontal word, check new vertical words
+			// that may have been made and vice versa
 			if (mainWord != null && (mainWord.containsAll(currMoves))) {
 
 				// add main words score
@@ -319,13 +350,19 @@ public class ScrabbleModel {
 				for (Move m : currMoves) {
 					secondaryWord = isHorizontal ? this.checkVertical(m.getX(), y, 2)
 							: this.checkHorizontal(x, m.getY(), 2);
+
+					// if null, one of the adjacent spellings is not a legal word
 					if (secondaryWord == null) {
 						valid = false;
 						break;
 					}
+
+					// if it is longer than one, there is a word
 					if (secondaryWord.size() > 1) {
 						for (Move m2 : currMoves) {
-							if (secondaryWord.contains(m2)) {						
+
+							// make sure the word is new and not already existing
+							if (secondaryWord.contains(m2)) {
 								localScore += calculateScore(secondaryWord);
 								break;
 							}
@@ -336,10 +373,11 @@ public class ScrabbleModel {
 				valid = false;
 			}
 		}
+
+		// if any issues, relay that to the view
 		if (!valid) {
 			undoMoves();
-			notifyObserver(currPlayer.getName() + " played an invalid word " 
-				 + "... Try again", "currPlay");
+			notifyObserver(currPlayer.getName() + " played an invalid word " + "... Try again", "currPlay");
 			return false;
 		}
 
@@ -351,24 +389,31 @@ public class ScrabbleModel {
 			localScore += 50;
 		}
 
-		// change turns
+		// update game info
 		currPlayer.addScore(localScore);
 		notifyObserver(scoreBoard(), "score");
-		notifyObserver(currPlayer.getName() + " played the word " + makeStr(mainWord) + " for " 
-					+ String.valueOf(localScore) + " points!", "currPlay");
+		notifyObserver(currPlayer.getName() + " played the word " + makeStr(mainWord) + " for "
+				+ String.valueOf(localScore) + " points!", "currPlay");
 		drawLetters();
 		return true;
 	}
-	
+
 	private String makeStr(ArrayList<Move> moveWord) {
+		/**
+		 * This private helper is simply to construct the played word to display
+		 */
 		String s = "";
 		for (Move m : moveWord) {
 			s += m.getLetter().getChar();
 		}
 		return s;
 	}
-	
+
 	public boolean isGameOver() {
+		/**
+		 * This method sees if the current player used all of their tiles and the bag is
+		 * empty
+		 */
 		if (this.getCurrHand().size() == 0) {
 			winningMessage();
 			return true;
@@ -377,10 +422,19 @@ public class ScrabbleModel {
 	}
 
 	private void winningMessage() {
-		String winning = "GAME OVER: " + currPlayer.getName() + " has WON!";
-		notifyObserver(winning, "currPlay");
+		/**
+		 * This private helper creates the message displayed when the game ends when all
+		 * tiles are used
+		 */
+
+		if (player1.getScore() == player2.getScore()) {
+			notifyObserver("You guys TIED!", "currPlay");
+		} else {
+			String winner = player1.getScore() > player2.getScore() ? player1.getName() : player2.getName();
+			notifyObserver("GAME OVER: " + winner + " has WON!", "currPlay");
+		}
 	}
-	
+
 	private int calculateScore(ArrayList<Move> arr) {
 		/**
 		 * This method calculates the score for a given word.
@@ -403,11 +457,14 @@ public class ScrabbleModel {
 			score += l.getPoints() * tile.getMulti();
 
 		}
-//		System.out.println("Score for this word is: " + score);
 		return score;
 	}
 
 	private int wordMultipliers() {
+		/**
+		 * This method takes all of word multipliers that may have been used and
+		 * incorporates them within the score
+		 */
 		int multi = 1;
 		for (Move m : currMoves) {
 			multi *= board[m.getY()][m.getX()].getWordMulti();
@@ -429,7 +486,6 @@ public class ScrabbleModel {
 		 */
 
 		for (Move m : currMoves) {
-			System.out.println("adjacentCheck move is (" + m.getX() + ", " + m.getY() + ")");
 			if (m.getY() - 1 != -1 && !board[m.getY() - 1][m.getX()].isUnoccupied()) {
 				// If not top board edge position above IS occupied, return true
 				return true;
@@ -484,7 +540,6 @@ public class ScrabbleModel {
 		} else {
 			return null;
 		}
-		// return this.checkIfTileArrayIsWord(checkLongerWord);
 	}
 
 	private ArrayList<Move> checkVertical(int x, int y, int minimumLength) {
@@ -499,7 +554,7 @@ public class ScrabbleModel {
 		 * @param (int) y: y cord for a tile
 		 * @param (int) minimumLength: length of word
 		 * 
-		 * @return
+		 * @return (ArrayList<Move>): list of move objects that represent a word
 		 */
 
 		ArrayList<Tile> checkLongerWord = new ArrayList<Tile>(15);
@@ -533,7 +588,6 @@ public class ScrabbleModel {
 		 * 
 		 * @return (boolean): whether or not it is a word
 		 */
-		System.out.println("New  " + moves.toString());
 		StringBuffer str = new StringBuffer();
 		for (Move m : moves) {
 			str.append(m.getLetter().getChar());
@@ -592,27 +646,50 @@ public class ScrabbleModel {
 		 * 
 		 * @return (String): a score board as "<player1> score score <player2>"
 		 */
-		return "<html>" + player1.getName() + " " + String.valueOf(player1.getScore()) + "<br>" 
-				+ player2.getName() + " " + String.valueOf(player2.getScore()) + "</html>";
+		return "<html>" + player1.getName() + " " + String.valueOf(player1.getScore()) + "<br>" + player2.getName()
+				+ " " + String.valueOf(player2.getScore()) + "</html>";
 	}
-	
+
 	public String getCurrPlayerName() {
+		/**
+		 * @return (String): name of current player
+		 */
 		return currPlayer.getName();
 	}
-	
+
 	public void forceEnd() {
+		/**
+		 * This method is meant to display the forfeit ending
+		 */
 		Player winner = currPlayer == player1 ? player2 : player1;
-		String endMessage = "<html>" + currPlayer.getName() + " has forfeited! <br>" 
-				+ winner.getName() + " has won!</html>";
+		String endMessage = "<html>" + currPlayer.getName() + " has forfeited! <br>" + winner.getName()
+				+ " has won!</html>";
 		notifyObserver(endMessage, "currPlay");
 	}
 
 	public void playAgain() {
+		/**
+		 * This method is essentially a callable constructor. It resets the model when a
+		 * game wants to start over
+		 */
 		initializeBoard();
 		letterBag.fillBag();
 		player1 = new Player(player1.getName(), Player.PlayerNum.ONE);
 		player2 = new Player(player2.getName(), Player.PlayerNum.TWO);
 		initializeHands();
+		currMoves.clear();
+		usedLetters.clear();
 		currPlayer = player1;
+	}
+
+	public boolean letterInUse(Letter l) {
+		/**
+		 * This method returns whether or not a given letter is being used on the board
+		 * 
+		 * @param (Letter) l : the letter in question
+		 * 
+		 * @return (boolean): if it is in use or not
+		 */
+		return usedLetters.contains(l);
 	}
 }

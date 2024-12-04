@@ -11,29 +11,27 @@
 package aggregates;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.Serializable;
 import java.util.Scanner;
 
-public class Letter{
+public final class Letter {
 	/**
-	 * This class represents a Letter object for the game of Scrabble.
-	 * The letters in the game are known in advance and each tile is unique
-	 * so the class is structured as a flyweight. No one should be able to 
-	 * create new Letters during the game, it should be strictly the letters
-	 * that are provided with the game.
+	 * This class represents a Letter object for the game of Scrabble. The letters
+	 * in the game are known in advance and each tile is unique so the class is
+	 * structured as a flyweight. No one should be able to create new Letters during
+	 * the game, it should be strictly the letters that are provided with the game.
+	 * 
+	 * This is an immutable object.
 	 */
-	
-	private static final Letter[] LETTER_PILE =
-			new Letter[98];
-	
+
+	private static final Letter[] LETTER_PILE = new Letter[98];
+
 	static {
-		
-		/** 
-		 * the letters are constructed via a file that lists all of the letters,
-		 * how many of them there are, and the points associated with them.
+
+		/**
+		 * the letters are constructed via a file that lists all of the letters, how
+		 * many of them there are, and the points associated with them.
 		 */
-		
+
 		// make sure file exists
 		try {
 			String fn = "letters.txt";
@@ -55,38 +53,29 @@ public class Letter{
 			System.exit(1);
 		}
 	};
-	
-	
+
 	private char letter;
 	private int points;
-	private boolean inUse = false;
-	
+
 	private Letter(char c, int points) {
 		this.letter = c;
-		this.points = points;	
+		this.points = points;
 	}
-	
-	//getters and setters
+
+	// getters and setters
 	public String getChar() {
 		return String.valueOf(letter);
 	}
-	
+
 	public int getPoints() {
 		return points;
 	}
-	
+
+	// static access method
 	public static Letter getLetter(int i) {
 		return LETTER_PILE[i];
 	}
-	
-	protected void setInUse(boolean inUse) {
-		this.inUse = inUse;
-	}
-	
-	public boolean isInUse() {
-		return inUse;
-	}
-	
+
 	@Override
 	public String toString() {
 		return letter + " : " + String.valueOf(points);

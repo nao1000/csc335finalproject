@@ -18,8 +18,8 @@ public class Player {
 	/**
 	 * This class represents a player in the game of Scrabble
 	 * 
-	 * It contains who the player is, their score in the current game, and
-	 * their hand
+	 * It contains who the player is, their score in the current game, and their
+	 * hand
 	 */
 
 	// Small enum to repr which player someone is (this is only implementing
@@ -27,12 +27,12 @@ public class Player {
 	public enum PlayerNum {
 		ONE, TWO
 	};
-	
+
 	private String name;
 	private int score;
 	private PlayerNum playerNum;
 	private ArrayList<Letter> hand;
-	
+
 	public Player(String name, PlayerNum playerNum) {
 		this.name = name;
 		this.score = 0;
@@ -40,7 +40,7 @@ public class Player {
 		this.hand = new ArrayList<Letter>();
 	}
 
-	//getters
+	// getters
 	public String getName() {
 		return name;
 	}
@@ -48,11 +48,11 @@ public class Player {
 	public int getScore() {
 		return score;
 	}
-	
+
 	public List<Letter> getHand() {
 		return Collections.unmodifiableList(hand);
 	}
-	
+
 	public PlayerNum getPlayerNum() {
 		return playerNum;
 	}
@@ -60,26 +60,24 @@ public class Player {
 	public int size() {
 		return hand.size();
 	}
-	
+
 	public void discardLetter(ArrayList<Letter> discardLetters) {
 		/**
-		 * This method removes all tiles designated to be 
-		 * discarded
+		 * This method removes all tiles designated to be discarded
 		 * 
-		 * @param (ArrayList<Letter>) discardLetters: a list of Letter
-		 * objects to be removed from hand.
+		 * @param (ArrayList<Letter>) discardLetters: a list of Letter objects to be
+		 *                            removed from hand.
 		 */
 		for (Letter l : discardLetters) {
 			hand.remove(l);
 		}
 	}
-	
+
 	public void addLetter(Letter l) {
 		/**
 		 * This method adds a letter to a player's hand
 		 * 
-		 * @param (Letter) l: a letter to be added to a
-		 * hand
+		 * @param (Letter) l: a letter to be added to a hand
 		 */
 		hand.add(l);
 	}
@@ -91,7 +89,7 @@ public class Player {
 		 * @param (int) score: the score of the player's turn
 		 */
 		if (score < 0) {
-            throw new IllegalArgumentException("Score cannot be negative");
+			throw new IllegalArgumentException("Score cannot be negative");
 		}
 		this.score += score;
 	}

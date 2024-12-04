@@ -1,12 +1,20 @@
+/*
+ * Nathan, Jay, Kory, Steven
+ * 
+ * File: TestScrabbleModel.java
+ * 
+ * Description: JUnit for specifically ScrabbleModel.java
+ * Other two files had duplicated code that could be consolidated.
+ * This tests are more specific and cover different types of
+ * methods in the model that don't have the same set up
+ */
+
 package model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import org.junit.jupiter.api.Test;
 
@@ -163,8 +171,6 @@ class TestScrabbleModel {
 		model.makeMove(Letter.getLetter(50), 4, 7);
 		model.makeMove(Letter.getLetter(0), 5, 7);
 		model.makeMove(Letter.getLetter(44), 6, 7);
-		
-		System.out.println(model.toString());
 
 		assertTrue(model.implementCurrentMove());
 
@@ -184,6 +190,7 @@ class TestScrabbleModel {
 		model.makeMove(Letter.getLetter(0), 11, 7);
 		model.makeMove(Letter.getLetter(60), 12, 7);
 		model.makeMove(Letter.getLetter(51), 13, 7);
+		System.out.println(model.toString());
 
 		assertTrue(model.implementCurrentMove());
 
@@ -194,16 +201,16 @@ class TestScrabbleModel {
 		assertEquals(model.getCurrHand().size(), 7);
 
 	}
-	
+
 	@Test
 	public void testAddNotInCenter() {
 		model.makeMove(Letter.getLetter(0), 0, 0);
 		assertFalse(model.implementCurrentMove());
 	}
-	
+
 	@Test
 	public void adjacencyTest1() {
-		
+
 	}
 
 	@Test
@@ -211,13 +218,10 @@ class TestScrabbleModel {
 
 		List<Letter> hand1 = model.getCurrHand();
 		ArrayList<Letter> toDiscard = new ArrayList<>(hand1);
-		System.out.println(hand1.toString());
 		model.discardLetters(toDiscard);
 		List<Letter> hand2 = model.getCurrHand();
-		System.out.println(hand2.toString());
 		for (int i = 0; i < hand1.size(); i++) {
-			System.out.print(hand1.get(i));
-			System.out.print(hand2.get(i));
+			assertNotEquals(toDiscard.get(i), hand2.get(i));
 		}
 
 	}
@@ -231,35 +235,31 @@ class TestScrabbleModel {
 		ArrayList<Letter> toDiscard = new ArrayList<>(hand1);
 		model.discardLetters(toDiscard);
 		List<Letter> hand2 = model.getCurrHand();
-		System.out.println(hand1.toString());
-		System.out.println(hand2.toString());
 		for (int i = 0; i < hand1.size(); i++) {
-			System.out.print(hand1.get(i));
-			System.out.print(hand2.get(i));
 			assertNotEquals(hand1.get(i), hand2.get(i));
 		}
 
 	}
-	
+
 	@Test
 	public void testGetCurrName() {
 		assertEquals("Player One", model.getCurrPlayerName());
 	}
-	
+
 	@Test
 	public void testConstructorCustomNames() {
 		ScrabbleModel model = new ScrabbleModel("Steven", "Jay");
 
-		assertTrue(model.getCurrPlayerName().compareTo("Steven") == 0);	
+		assertTrue(model.getCurrPlayerName().compareTo("Steven") == 0);
 		model.makeMove(Letter.getLetter(77), 7, 7);
 		model.makeMove(Letter.getLetter(30), 8, 7);
 		model.makeMove(Letter.getLetter(38), 9, 7);
 		assertTrue(model.implementCurrentMove());
 		model.changeTurns();
-		assertTrue(model.getCurrPlayerName().compareTo("Jay") == 0);	
+		assertTrue(model.getCurrPlayerName().compareTo("Jay") == 0);
 		assertFalse(model.isGameOver());
 	}
-	
+
 	@Test
 	public void testForceEnd() {
 		ScrabbleModel model = new ScrabbleModel("Steven", "Jay");
@@ -268,5 +268,13 @@ class TestScrabbleModel {
 		model.makeMove(Letter.getLetter(38), 9, 7);
 		model.forceEnd();
 	}
-	
+
+	@Test
+	public void testChangeTurns() {
+		String name1 = model.getCurrPlayerName();
+		model.changeTurns();
+		assertNotEquals(name1, model.getCurrPlayerName());
+		model.changeTurns();
+		assertEquals(name1, model.getCurrPlayerName());
+	}
 }

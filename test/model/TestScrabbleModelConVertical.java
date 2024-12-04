@@ -1,3 +1,13 @@
+/*
+ * Nathan, Jay, Kory, Steven
+ * 
+ * File: TestScrabbleModelConVertical.java
+ * 
+ * Description: JUnit for specifically ScrabbleModel.java
+ * Every test uses the word "con" vertically, so a @BeforeEach is used
+ * to set up each test
+ */
+
 package model;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -5,14 +15,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.suite.api.Suite;
 
 import aggregates.Letter;
 
-
 public class TestScrabbleModelConVertical {
-	
-	
+
 	ScrabbleModel model = new ScrabbleModel();
 
 	@BeforeEach
@@ -22,7 +29,7 @@ public class TestScrabbleModelConVertical {
 		model.makeMove(Letter.getLetter(38), 7, 9);
 		assertTrue(model.implementCurrentMove());
 	}
-	
+
 	// Basic vertical test cases
 	@Test
 	public void testAddingDriectlyBelow() {
@@ -49,7 +56,7 @@ public class TestScrabbleModelConVertical {
 
 	@Test
 	public void testAddingSingleLetterDirectlyAbove() {
-		
+
 		// Add letter "e" directly to the bottom of "con"
 		model.makeMove(Letter.getLetter(0), 7, 10);
 
@@ -99,7 +106,7 @@ public class TestScrabbleModelConVertical {
 	public void testAddingInvalidWordToRight() {
 
 		// Add word "eeee" directly to the ,left of "con"
-		model.makeMove(Letter.getLetter(31), 8, 7); 
+		model.makeMove(Letter.getLetter(31), 8, 7);
 		model.makeMove(Letter.getLetter(39), 8, 8);
 		model.makeMove(Letter.getLetter(1), 8, 9);
 
@@ -119,5 +126,3 @@ public class TestScrabbleModelConVertical {
 
 	}
 }
-
-
