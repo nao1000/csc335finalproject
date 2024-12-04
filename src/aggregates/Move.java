@@ -10,53 +10,40 @@
 
 package aggregates;
 
-import java.util.Comparator;
-
 public class Move implements Comparable<Move> {
 	/**
-	 * This class represents a move a player is trying to make in the game.
-	 * It really just words as a tuple of (x,y,letter) and used by the model
-	 * to remember where things are.
+	 * This class represents a move a player is trying to make in the game. It
+	 * really just words as a tuple of (x,y,letter) and used by the model to
+	 * remember where things are.
 	 */
 	private int x;
 	private int y;
 	private Letter l;
-	
-	public Move(Letter l ,int x,int y) {
+
+	public Move(Letter l, int x, int y) {
 		this.x = x;
 		this.y = y;
 		this.l = l;
-		this.l.setInUse(true);
 	}
-	
-	//getters
+
+	// getters
 	public int getX() {
 		return x;
 	}
-	
+
 	public int getY() {
 		return y;
 	}
-	
+
 	public Letter getLetter() {
 		return l;
 	}
-	
-	public void undoUse() {
-		/**
-		 * By default, when a move is created the letter is considered in use.
-		 * When we clear letters via an invalid move, we need to flip this back off
-		 * before we lose the Move object
-		 */
-		l.setInUse(false);
-	}
-	
+
 	@Override
 	public String toString() {
 		return "(" + x + ", " + y + ") " + l.toString();
 	}
-	
-	
+
 	@Override
 	public boolean equals(Object other) {
 		if (other == null) {
@@ -68,7 +55,8 @@ public class Move implements Comparable<Move> {
 		if (other.getClass() != getClass()) {
 			return false;
 		}
-		return this.x == ((Move) other).getX() && this.y == ((Move) other).getY() && this.l == ((Move) other).getLetter();
+		return this.x == ((Move) other).getX() && this.y == ((Move) other).getY()
+				&& this.l == ((Move) other).getLetter();
 	}
 
 	public int compareTo(Move other) {

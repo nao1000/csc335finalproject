@@ -1,3 +1,13 @@
+/*
+ * Nathan, Jay, Kory, Steven
+ * 
+ * File: TestScrabbleModelConHorizontal.java
+ * 
+ * Description: JUnit for specifically ScrabbleModel.java
+ * Every test uses the word "con" horizontally, so a @BeforeEach is used
+ * to set up each test
+ */
+
 package model;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -5,10 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.suite.api.Suite;
 
 import aggregates.Letter;
-
 
 public class TestScrabbleModelConHorizontal {
 
@@ -100,19 +108,18 @@ public class TestScrabbleModelConHorizontal {
 
 		assertFalse(model.implementCurrentMove());
 	}
-	
+
 	@Test
 	public void testingVerticalButNotHorizontalSingleLetter() {
-		
+
 		// spell nook using the n from con
 		model.makeMove(Letter.getLetter(31), 9, 8);
 		model.makeMove(Letter.getLetter(32), 9, 9);
 		model.makeMove(Letter.getLetter(93), 9, 10);
 		assertTrue(model.implementCurrentMove());
-		
-		//spell OF vertically but FO horizontally
+
+		// spell OF vertically but FO horizontally
 		model.makeMove(Letter.getLetter(83), 8, 8);
 		assertFalse(model.implementCurrentMove());
-		System.out.println(model.toString());
 	}
 }
