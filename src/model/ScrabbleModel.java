@@ -512,8 +512,7 @@ public class ScrabbleModel {
 		 * Given an x,y location on the board, iterate to the left until the last
 		 * character before an empty spot is found, or the edge of the board is reached.
 		 * Then iterate all the way to the right until the end of the row of letters or
-		 * the end of the board is reached. Return true if this row makes up a valid
-		 * word.
+		 * the end of the board is reached. 
 		 * 
 		 * @param (int) x: x cord for a tile
 		 * @param (int) y: y cord for a tile
@@ -548,8 +547,8 @@ public class ScrabbleModel {
 		 * Given an x,y location on the board, iterate to the left until the last
 		 * character before an empty spot is found, or the edge of the board is reached.
 		 * Then iterate all the way to the right until the end of the row of letters or
-		 * the end of the board is reached. Return true if this row makes up a valid
-		 * word.
+		 * the end of the board is reached. Create and ArrayList of Moves containing 
+		 * the checked positions
 		 * 
 		 * @param (int) x: x cord for a tile
 		 * @param (int) y: y cord for a tile
