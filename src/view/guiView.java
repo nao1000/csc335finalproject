@@ -65,6 +65,7 @@ public class guiView extends JFrame {
 	private JButton clearButton;
 	private JButton quitButton;
 	private JButton skipButton;
+	private InfoLabel playedWord;
 
 	private guiView() {
 		setUp();
@@ -222,7 +223,7 @@ public class guiView extends JFrame {
 		infoPanel.setBorder(border);
 
 		// played word does not have a default message, waits for play
-		InfoLabel playedWord = new InfoLabel(ctrl, "currPlay");
+		playedWord = new InfoLabel(ctrl, "currPlay");
 		infoPanel.add(score, infoGBC);
 		infoGBC.gridy++;
 		infoPanel.add(left, infoGBC);
@@ -465,6 +466,7 @@ public class guiView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				colorFlash(new Color[] { Color.RED, Color.GREEN, Color.BLUE });
+				playedWord.updateInfo(ctrl.getCurrName()+ " skipped their turn!");
 				ctrl.swapTurns();
 				mainPanel.remove(handPanel);
 				LetterTransferHandler.clearTileLabels();
