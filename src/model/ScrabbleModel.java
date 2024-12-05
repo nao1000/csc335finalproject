@@ -175,6 +175,7 @@ public class ScrabbleModel {
 				letterBag.addTo(l);
 			}
 		}
+		notifyObserver(currPlayer.getName() + " discarded letters!", "currPlay");
 	}
 
 	public void drawLetters() {
@@ -218,6 +219,7 @@ public class ScrabbleModel {
 		 * 
 		 * @pre l != null && 0 <= x <= 14 && 0 <= y <= 14
 		 */
+		usedLetters.add(l);
 		currMoves.add(new Move(l, x, y));
 	}
 
@@ -228,7 +230,6 @@ public class ScrabbleModel {
 		 * the letters is valid.
 		 */
 		for (Move m : currMoves) {
-			usedLetters.add(m.getLetter());
 			board[m.getY()][m.getX()].placeLetterTile(m.getLetter());
 		}
 	}
@@ -247,7 +248,7 @@ public class ScrabbleModel {
 		currMoves.clear();
 	}
 
-	public void clearMoves() {
+	private void clearMoves() {
 		/**
 		 * This method simply clears the current moves after a change in turns
 		 */
