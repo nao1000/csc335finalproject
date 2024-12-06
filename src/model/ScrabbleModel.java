@@ -77,6 +77,9 @@ public class ScrabbleModel {
 		 * This method is a play on the actual design pattern. There are not separate
 		 * observers to worry about but simply InfoLabels. These labels have a unique
 		 * "name" so it update the correct one with the correct information.
+		 * 
+		 * @param (String) updateTo : specific game info to be displayed on GUI
+		 * @param (String) name : ID of the label we want to update
 		 */
 		for (InfoLabel il : aObservers) {
 			if (il.getName().equals(name)) {
@@ -516,7 +519,7 @@ public class ScrabbleModel {
 		 * @param (int) y: y cord for a tile
 		 * @param (int) minimumLength: length of word
 		 * 
-		 * @return
+		 * @return (ArrayList<Move>): a list of Move objects that repr the full word made
 		 */
 		ArrayList<Move> currentWord = new ArrayList<Move>(15);
 		ArrayList<Tile> checkLongerWord = new ArrayList<Tile>(15);

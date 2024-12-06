@@ -120,6 +120,8 @@ public class ScrabbleController {
 		 * This method adds an InfoLabel to our model. It is a similar idea to the
 		 * Observer pattern but is not directly that. This just allows the model to
 		 * update part of the view if the client desires
+		 * 
+		 * @param (InfoLabel) il : an infolabel the model will set to repr game info
 		 */
 		model.addObserver(il);
 	}
