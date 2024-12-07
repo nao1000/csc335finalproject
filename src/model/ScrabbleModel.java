@@ -255,6 +255,9 @@ public class ScrabbleModel {
 		/**
 		 * This method simply clears the current moves after a change in turns
 		 */
+		for (Move m : currMoves) {
+			usedLetters.remove(m.getLetter());
+		}
 		currMoves.clear();
 	}
 
