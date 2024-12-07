@@ -48,7 +48,6 @@ public class LetterTransferHandler extends TransferHandler {
 
 		// Check if the letter is in use and prevent transfer if it is
 		// This locks the LetterLabel until it is cleared
-		System.out.println(letter.getChar());
 		if (controller.letterInUse(letter)) {
 			return null;
 		}
