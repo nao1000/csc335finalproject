@@ -48,6 +48,7 @@ public class LetterTransferHandler extends TransferHandler {
 
 		// Check if the letter is in use and prevent transfer if it is
 		// This locks the LetterLabel until it is cleared
+		System.out.println(letter.getChar());
 		if (controller.letterInUse(letter)) {
 			return null;
 		}
@@ -79,7 +80,7 @@ public class LetterTransferHandler extends TransferHandler {
 			// final super smart fix for me... if it is already yellow, we shouldn't
 			// override it (if you want to replace a tile, hit clear!)
 			TileLabel label = (TileLabel) support.getComponent();
-			if (label.getBackground() == Color.YELLOW) {
+			if (label.getBackground() == Color.YELLOW || !label.isEmpty()) {
 				return false;
 			}
 			Transferable transferable = support.getTransferable();

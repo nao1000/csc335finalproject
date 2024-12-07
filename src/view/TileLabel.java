@@ -71,6 +71,15 @@ public class TileLabel extends JLabel {
 		this.setText(" ");
 		this.setOpaque(false);
 	}
+	
+	public boolean isEmpty() {
+		/**
+		 * This method checks if the Optional<Letter> contains a value
+		 * 
+		 * @return (boolean): whether or not there is a letter on tile
+		 */
+		return l.isEmpty();
+	}
 
 	public int myGetX() {
 		/**
